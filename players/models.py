@@ -27,6 +27,12 @@ class Player(models.Model):
 
     goals = models.IntegerField(default=0)
 
+    assists = models.IntegerField(default=0)
+
+    clean_sheets = models.IntegerField(default=0)
+
+    goal_conceded = models.IntegerField(default=0)
+
     yellow_cards = models.IntegerField(default=0)
     
     red_cards = models.IntegerField(default=0)
