@@ -90,6 +90,7 @@
             Admin Panel
         </a>
 
+        
     </div>
 
     <div class="section">
@@ -141,19 +142,39 @@
 
         <h2>Upcoming Fixtures</h2>
 
-        {% for match in matches %}
+<table border="1" cellpadding="10" cellspacing="0">
 
-            <p>
-                {{ match.home_team }}
-                vs
-                {{ match.away_team }}
-            </p>
+    <tr>
+        <th>Date</th>
+        <th>Home Team</th>
+        <th></th>
+        <th>Away Team</th>
+        <th>Status</th>
+    </tr>
 
-        {% empty %}
+    {% for match in fixtures %}
 
-            <p>No fixtures available.</p>
+    <tr>
+        <td>{{ match.match_date }}</td>
 
-        {% endfor %}
+        <td>{{ match.home_team }}</td>
+
+        <td>vs</td>
+
+        <td>{{ match.away_team }}</td>
+
+        <td>{{ match.status }}</td>
+    </tr>
+
+    {% empty %}
+
+    <tr>
+        <td colspan="5">No upcoming fixtures</td>
+    </tr>
+
+    {% endfor %}
+
+</table>
 
     </div>
 
@@ -169,6 +190,7 @@
 
         <tr>
             <th>Player</th>
+            <th>Team</th>
             <th>Goals</th>
         </tr>
 
@@ -176,7 +198,9 @@
 
         <tr>
 
-            <td>{{ player.name }}</td>
+            <td>{{ player.player_name }}</td>
+
+            <td>{{player.team}}</td>
 
             <td>{{ player.goals }}</td>
 
@@ -197,6 +221,7 @@
 
         <tr>
             <th>Player</th>
+            <th>Team</th>
             <th>Assists</th>
         </tr>
 
@@ -204,7 +229,9 @@
 
         <tr>
 
-            <td>{{ player.name }}</td>
+            <td>{{ player.player_name }}</td>
+
+            <td>{{ player.team }}</td>
 
             <td>{{ player.assists }}</td>
 
@@ -225,16 +252,22 @@
 
         <tr>
             <th>Goalkeeper</th>
+            <th>Team</th>
             <th>Clean Sheets</th>
+            <th>Goals Conceded</th>
         </tr>
 
         {% for player in clean_sheets %}
 
         <tr>
 
-            <td>{{ player.name }}</td>
+            <td>{{ player.player_name }}</td>
+
+            <td>{{ player.team }}</td>
 
             <td>{{ player.clean_sheets }}</td>
+
+            <td>{{ player.goal_conceded }}</td>
 
         </tr>
 

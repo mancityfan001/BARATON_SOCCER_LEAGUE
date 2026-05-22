@@ -19,6 +19,12 @@ class TeamAdmin(admin.ModelAdmin):
         'points',
     )
 
+    ordering = (
+        '-points',
+          '-goal_difference', 
+          '-goals_scored'
+          )
+
 
 @admin.register(TeamPayment)
 class TeamPaymentAdmin(admin.ModelAdmin):

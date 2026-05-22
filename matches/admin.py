@@ -1,37 +1,87 @@
 from django.contrib import admin
+from django.utils import timezone
+from datetime import timedelta
 
 from .models import Match, MatchReport
+from teams.models import Team
 
 
 @admin.register(Match)
-
 class MatchAdmin(admin.ModelAdmin):
 
     list_display = (
-
         'home_team',
-
         'away_team',
-
         'home_score',
-
         'away_score',
-
         'status',
+        'match_date',
+    )
 
-        'match_date'
+    actions = ['generate_fixtures']
 
+    def generate_fixtures(self, request, queryset):
+
+        # DELETE OLD FIXTURES
+        pending_matches = Match.objects.filter(status='Pending')
+        pending_matches.delete()
+
+        teams = list(Team.objects.all())
+
+        if len(teams) < 2:
+            self.message_user(
+                request,
+                "Add at least 2 teams first."
+            )
+            return
+
+        start_date = timezone.now()
+
+        # DOUBLE ROUND ROBIN
+        for i in range(len(teams)):
+            for j in range(i + 1, len(teams)):
+
+                home_team = teams[i]
+                away_team = teams[j]
+
+                # FIRST LEG
+                Match.objects.create(
+                    home_team=home_team,
+                    away_team=away_team,
+                    home_score=0,
+                    away_score=0,
+                    status='Pending',
+                    match_date=start_date
+                )
+
+                start_date += timedelta(days=7)
+
+                # SECOND LEG
+                Match.objects.create(
+                    home_team=away_team,
+                    away_team=home_team,
+                    home_score=0,
+                    away_score=0,
+                    status='Pending',
+                    match_date=start_date
+                )
+
+                start_date += timedelta(days=7)
+
+        self.message_user(
+            request,
+            "Fixtures generated successfully."
+        )
+
+    generate_fixtures.short_description = (
+        "Generate Double Round Robin Fixtures"
     )
 
 
 @admin.register(MatchReport)
-
 class MatchReportAdmin(admin.ModelAdmin):
 
     list_display = (
-
         'match',
-
-        'created_at'
-
+        'created_at',
     )

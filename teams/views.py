@@ -1,6 +1,6 @@
 from urllib import request
-
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
+from django.shortcuts import render
 from teams.models import Team
 from players.models import Player
 from matches.models import Match
@@ -12,12 +12,37 @@ from .models import TeamPayment
 
 # HOME PAGE
 def home(request):
-    teams = Team.objects.all()
-    matches = Match.objects.all()
+
+    teams = Team.objects.all().order_by('-points', '-goal_difference')
+
+    matches = Match.objects.all().order_by('-match_date')[:10]
+
+    fixtures = Match.objects.filter(
+        status='Pending'
+    ).order_by('match_date')[:10]
+
+    top_scorers = Player.objects.filter(
+        goals__gt=0
+    ).order_by('-goals')[:5]
+
+    top_assists = Player.objects.filter(
+        assists__gt=0
+    ).order_by('-assists')[:5]
+
+    clean_sheets = Player.objects.filter(
+        position='Goalkeeper'
+    ).order_by(
+        '-clean_sheets',
+        'goal_conceded'
+    )[:5]
 
     context = {
         'teams': teams,
-        'matches': matches
+        'matches': matches,
+        'fixtures': fixtures,
+        'top_scorers': top_scorers,
+        'top_assists': top_assists,
+        'clean_sheets': clean_sheets,
     }
 
     return render(request, 'core/home.html', context)
@@ -138,7 +163,11 @@ from notifications.models import Notification
 
 def team_payment(request):
 
-    teams = Team.objects.all()
+    teams = Team.objects.all().order_by(
+        'points',
+        'goal_difference',
+        'goals_scored'
+    )
 
     if request.method == 'POST':
 
