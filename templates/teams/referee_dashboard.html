@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Referee Dashboard</title>
+
+    <style>
+
+        body{
+            font-family:Arial;
+            background:#f4f4f4;
+        }
+
+        .container{
+            width:85%;
+            margin:auto;
+            margin-top:30px;
+        }
+
+        .card{
+            background:white;
+            padding:20px;
+            margin-bottom:20px;
+            border-radius:10px;
+        }
+
+        h1{
+            color:#11c5d9;
+        }
+
+        ul{
+            padding-left:20px;
+        }
+
+        button{
+            background:#11c5d9;
+            color:white;
+            border:none;
+            padding:10px 20px;
+            border-radius:5px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>Referee Dashboard</h1>
+
+        <h3>Total Games Officiated</h3>
+        <p>{{ games_officiated }}</p>
+
+        <h3>Upcoming Matches</h3>
+        <p>{{ upcoming_matches }}</p>
+
+    </div>
+
+    <div class="card">
+
+        <h3>Assigned Matches</h3>
+
+        <ul>
+
+            {% for match in assigned_matches %}
+
+                <li>{{ match }}</li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+    <div class="card">
+
+        <h3>Match Reports</h3>
+
+        <button>
+            Submit Match Report
+        </button>
+
+    </div>
+
+</div>
+
+</body>
+</html>

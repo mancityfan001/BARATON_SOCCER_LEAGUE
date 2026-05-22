@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Baraton Soccer League</title>
+
+    <style>
+
+        body{
+            font-family:Arial;
+            background:#f4f4f4;
+            margin:0;
+            padding:0;
+        }
+
+        header{
+            background:#00bcd4;
+            color:white;
+            padding:20px;
+        }
+
+        .container{
+            width:90%;
+            margin:auto;
+            padding:20px;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+        }
+
+        th{
+            background:#00bcd4;
+            color:white;
+            padding:12px;
+        }
+
+        td{
+            padding:10px;
+            border-bottom:1px solid #ddd;
+            text-align:center;
+        }
+
+        .buttons{
+            margin-bottom:20px;
+        }
+
+        .btn{
+            display:inline-block;
+            background:#00bcd4;
+            color:white;
+            padding:12px 20px;
+            text-decoration:none;
+            margin-right:10px;
+        }
+
+        .section{
+            background:white;
+            padding:20px;
+            margin-top:20px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>BARATON SOCCER LEAGUE</h1>
+
+</header>
+
+<div class="container">
+
+    <div class="buttons">
+
+        <a href="/login/" class="btn">
+            Coach Portal
+        </a>
+
+<a href="/referee-login/" class="btn">
+            Referee  Portal
+        </a>
+
+        <a href="/admin/" class="btn">
+            Admin Panel
+        </a>
+
+    </div>
+
+    <div class="section">
+
+        <h2>League Table</h2>
+
+        <table>
+
+            <tr>
+                <th>Pos</th>
+                <th>Club</th>
+                <th>P</th>
+                <th>W</th>
+                <th>D</th>
+                <th>L</th>
+                <th>GD</th>
+                <th>Pts</th>
+            </tr>
+
+            {% for team in teams %}
+
+            <tr>
+
+                <td>{{ forloop.counter }}</td>
+
+                <td>{{ team.name }}</td>
+
+                <td>{{ team.played }}</td>
+
+                <td>{{ team.wins }}</td>
+
+                <td>{{ team.draws }}</td>
+
+                <td>{{ team.losses }}</td>
+
+                <td>{{ team.goal_difference }}</td>
+
+                <td>{{ team.points }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+    <div class="section">
+
+        <h2>Upcoming Fixtures</h2>
+
+        {% for match in matches %}
+
+            <p>
+                {{ match.home_team }}
+                vs
+                {{ match.away_team }}
+            </p>
+
+        {% empty %}
+
+            <p>No fixtures available.</p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
+<div class="section">
+
+    <h2>Top Scorers</h2>
+
+    <table>
+
+        <tr>
+            <th>Player</th>
+            <th>Goals</th>
+        </tr>
+
+        {% for player in top_scorers %}
+
+        <tr>
+
+            <td>{{ player.name }}</td>
+
+            <td>{{ player.goals }}</td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+
+<div class="section">
+
+    <h2>Top Assists</h2>
+
+    <table>
+
+        <tr>
+            <th>Player</th>
+            <th>Assists</th>
+        </tr>
+
+        {% for player in top_assists %}
+
+        <tr>
+
+            <td>{{ player.name }}</td>
+
+            <td>{{ player.assists }}</td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+
+<div class="section">
+
+    <h2>Goalkeeper Clean Sheets</h2>
+
+    <table>
+
+        <tr>
+            <th>Goalkeeper</th>
+            <th>Clean Sheets</th>
+        </tr>
+
+        {% for player in clean_sheets %}
+
+        <tr>
+
+            <td>{{ player.name }}</td>
+
+            <td>{{ player.clean_sheets }}</td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>

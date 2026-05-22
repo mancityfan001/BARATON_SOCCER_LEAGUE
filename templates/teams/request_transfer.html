@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request Transfer</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background:#f4f4f4;
+        }
+
+        .container{
+            width:60%;
+            margin:auto;
+            margin-top:40px;
+            background:white;
+            padding:40px;
+            border-radius:10px;
+        }
+
+        h1{
+            color:#11c5d9;
+        }
+
+        input, select{
+            width:100%;
+            padding:12px;
+            margin-top:10px;
+            margin-bottom:20px;
+            border:1px solid #ccc;
+            border-radius:5px;
+        }
+
+        button{
+            background:#11c5d9;
+            color:white;
+            border:none;
+            padding:12px 20px;
+            border-radius:5px;
+            cursor:pointer;
+        }
+
+        .success{
+            background:#d4edda;
+            color:green;
+            padding:10px;
+            margin-bottom:20px;
+            border-radius:5px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Player Transfer Request</h1>
+
+    {% if success %}
+        <div class="success">
+            Transfer request submitted successfully.
+        </div>
+    {% endif %}
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <label>Player Name</label>
+        <input type="text" name="player">
+
+        <label>Transfer From</label>
+        <input type="text" name="from_team">
+
+        <label>Transfer To</label>
+        <input type="text" name="to_team">
+
+        <label>Transfer Fee</label>
+        <input type="number" name="fee">
+
+        <label>Status</label>
+        <select name="status">
+            <option>Pending</option>
+            <option>Approved</option>
+            <option>Rejected</option>
+        </select>
+
+        <button type="submit">
+            Submit Transfer
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

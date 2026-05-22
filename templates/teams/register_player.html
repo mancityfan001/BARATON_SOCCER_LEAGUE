@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register Player</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background:#f4f7fa;
+        }
+
+        .container{
+            width:70%;
+            margin:50px auto;
+            background:white;
+            padding:40px;
+            border-radius:10px;
+            box-shadow:0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1{
+            color:#00cfe8;
+            margin-bottom:30px;
+        }
+
+        label{
+            font-weight:bold;
+        }
+
+        input{
+            width:100%;
+            padding:12px;
+            margin-top:10px;
+            margin-bottom:25px;
+            border:1px solid #ccc;
+            border-radius:5px;
+        }
+
+        button{
+            background:#00cfe8;
+            color:white;
+            border:none;
+            padding:12px 20px;
+            border-radius:5px;
+            cursor:pointer;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Register Player</h1>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <label>Player Name</label>
+        <input type="text" name="player_name" required>
+
+        <label>Age</label>
+        <input type="number" name="age" required>
+
+        <label>Jersey Number</label>
+        <input type="number" name="jersey_number" required>
+
+        <label>School ID</label>
+        <input type="text" name="school_id" required>
+
+        <button type="submit">
+            Register Player
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

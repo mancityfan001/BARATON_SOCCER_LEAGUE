@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Submit Team Sheet</title>
+
+    <style>
+        body{
+            margin:0;
+            padding:0;
+            background:#f4f6f9;
+            font-family:Arial, sans-serif;
+        }
+
+        .header{
+            background:#11cfe0;
+            color:white;
+            padding:25px;
+            font-size:34px;
+            font-weight:bold;
+        }
+
+        .container{
+            width:85%;
+            margin:30px auto;
+            background:white;
+            padding:40px;
+            border-radius:10px;
+            box-shadow:0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h2{
+            color:#11cfe0;
+            margin-bottom:30px;
+        }
+
+        label{
+            font-weight:bold;
+            display:block;
+            margin-top:20px;
+            margin-bottom:8px;
+        }
+
+        input,
+        select,
+        textarea{
+            width:100%;
+            padding:14px;
+            border:1px solid #ccc;
+            border-radius:6px;
+            font-size:15px;
+        }
+
+        textarea{
+            height:120px;
+        }
+
+        .pitch{
+            margin-top:30px;
+            background:#0b7d32;
+            border-radius:12px;
+            padding:25px;
+            color:white;
+        }
+
+        .pitch-title{
+            text-align:center;
+            font-size:24px;
+            margin-bottom:25px;
+            font-weight:bold;
+        }
+
+        .player-grid{
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+            gap:15px;
+        }
+
+        .player-grid input{
+            background:white;
+        }
+
+        .btn{
+            margin-top:30px;
+            background:#11cfe0;
+            color:white;
+            border:none;
+            padding:14px 30px;
+            font-size:16px;
+            border-radius:6px;
+            cursor:pointer;
+        }
+
+        .btn:hover{
+            background:#09b5c4;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        BARATON SOCCER LEAGUE
+    </div>
+
+    <div class="container">
+
+        <h2>Submit Team Sheet</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label>Fixture</label>
+            <select name="fixture">
+                <option>Select Fixture</option>
+            </select>
+
+            <label>Team Name</label>
+            <input type="text" name="team">
+
+            <label>Captain Name</label>
+            <input type="text" name="captain">
+
+            <div class="pitch">
+
+                <div class="pitch-title">
+                    Starting XI
+                </div>
+
+                <div class="player-grid">
+
+                    <input type="text" placeholder="Goalkeeper">
+
+                    <input type="text" placeholder="Left Back">
+
+                    <input type="text" placeholder="Center Back">
+
+                    <input type="text" placeholder="Center Back">
+
+                    <input type="text" placeholder="Right Back">
+
+                    <input type="text" placeholder="Midfielder">
+
+                    <input type="text" placeholder="Midfielder">
+
+                    <input type="text" placeholder="Midfielder">
+
+                    <input type="text" placeholder="Left Wing">
+
+                    <input type="text" placeholder="Striker">
+
+                    <input type="text" placeholder="Right Wing">
+
+                </div>
+
+            </div>
+
+            <label>Substitutes</label>
+
+            <textarea
+                name="substitutes"
+                placeholder="Enter substitute players..."
+            ></textarea>
+
+            <button type="submit" class="btn">
+                Submit Team Sheet
+            </button>
+
+        </form>
+
+    </div>
+
+</body>
+</html>

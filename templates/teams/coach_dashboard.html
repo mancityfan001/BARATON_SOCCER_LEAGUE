@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Coach Dashboard</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background:#f4f7fa;
+            margin:0;
+            padding:0;
+        }
+
+        .topbar{
+            background:#00cfe8;
+            padding:20px;
+        }
+
+        .topbar h1{
+            color:white;
+            margin:0;
+        }
+
+        .container{
+            width:90%;
+            margin:30px auto;
+        }
+
+        .menu{
+            margin-bottom:30px;
+        }
+
+        .menu a{
+            background:#00cfe8;
+            color:white;
+            text-decoration:none;
+            padding:12px 20px;
+            border-radius:5px;
+            margin-right:10px;
+            display:inline-block;
+        }
+
+        .card{
+            background:white;
+            padding:25px;
+            border-radius:10px;
+            margin-bottom:30px;
+            box-shadow:0 0 10px rgba(0,0,0,0.1);
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        table th{
+            background:#00cfe8;
+            color:white;
+            padding:12px;
+            text-align:left;
+        }
+
+        table td{
+            padding:12px;
+            border-bottom:1px solid #ddd;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <h1>Coach Dashboard</h1>
+</div>
+
+<div class="container">
+
+    <div class="menu">
+
+        <a href="/register-player/">Register Player</a>
+
+        <a href="/teams/payment/">
+            Team Registration Fee
+        </a>
+
+        <a href="/request-transfer/">
+            Request Transfer
+        </a>
+
+        <a href="/lineups/submit/">
+            Submit Team Sheet
+        </a>
+
+        <a href="{% url 'notifications' %}">
+            Notifications
+        </a>
+
+        <a href="/logout/">
+            Logout
+        </a>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Your Players</h2>
+
+        <table>
+
+            <tr>
+                <th>Player Name</th>
+                <th>School ID</th>
+                <th>Age</th>
+                <th>Jersey Number</th>
+                <th>Team</th>
+            </tr>
+
+            {% for player in players %}
+
+            <tr>
+
+                <td>{{ player.player_name }}</td>
+                <td>{{ player.school_id }}</td>
+
+                <td>{{ player.age }}</td>
+
+                <td>{{ player.jersey_number }}</td>
+
+                <td>{{ player.team.name }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

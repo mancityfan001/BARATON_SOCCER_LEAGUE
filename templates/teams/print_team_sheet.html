@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Team Sheet</title>
+
+    <style>
+
+        body{
+            font-family: Arial, sans-serif;
+            padding:40px;
+            background:white;
+        }
+
+        h1{
+            text-align:center;
+            margin-bottom:0;
+        }
+
+        h2{
+            text-align:center;
+            margin-top:5px;
+            margin-bottom:40px;
+        }
+
+        .details{
+            margin-bottom:30px;
+        }
+
+        .details p{
+            margin:8px 0;
+            font-size:16px;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            margin-top:20px;
+        }
+
+        table th{
+            background:#00d9ff;
+            color:black;
+        }
+
+        table th,
+        table td{
+            border:1px solid black;
+            padding:10px;
+            text-align:center;
+        }
+
+        .section-title{
+            background:#d9f7ff;
+            font-weight:bold;
+            text-align:center;
+        }
+
+        .print-btn{
+            margin-top:30px;
+            padding:12px 20px;
+            background:#00d9ff;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+            font-weight:bold;
+        }
+
+        @media print{
+
+            .print-btn{
+                display:none;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>UNIVERSITY OF EASTERN AFRICA BARATON</h1>
+
+    <h2>BARATON PREMIER LEAGUE TEAM SHEET</h2>
+
+    <div class="details">
+
+        <p><strong>Fixture:</strong> {{ team_sheet.fixture }}</p>
+
+        <p><strong>Team:</strong> {{ team_sheet.team }}</p>
+
+        <p><strong>Coach Name:</strong> {{ team_sheet.coach_name }}</p>
+
+        <p><strong>Coach Contact:</strong> {{ team_sheet.coach_contact }}</p>
+
+        <p><strong>Assistant Coach:</strong> {{ team_sheet.assistant_coach_name }}</p>
+
+        <p><strong>Assistant Coach Contact:</strong> {{ team_sheet.assistant_coach_contact }}</p>
+
+        <p><strong>Captain Name:</strong> {{ team_sheet.captain_name }}</p>
+
+        <p><strong>Captain Contact:</strong> {{ team_sheet.captain_contact }}</p>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>#</th>
+                <th>Player Name</th>
+                <th>Position</th>
+                <th>Jersey</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td colspan="4" class="section-title">
+
+                    STARTING XI
+
+                </td>
+
+            </tr>
+
+            <tr>
+                <td>1</td>
+                <td>{{ team_sheet.player1_name }}</td>
+                <td>{{ team_sheet.player1_position }}</td>
+                <td>{{ team_sheet.player1_jersey }}</td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>{{ team_sheet.player2_name }}</td>
+                <td>{{ team_sheet.player2_position }}</td>
+                <td>{{ team_sheet.player2_jersey }}</td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>{{ team_sheet.player3_name }}</td>
+                <td>{{ team_sheet.player3_position }}</td>
+                <td>{{ team_sheet.player3_jersey }}</td>
+            </tr>
+
+            <tr>
+                <td>4</td>
+                <td>{{ team_sheet.player4_name }}</td>
+                <td>{{ team_sheet.player4_position }}</td>
+                <td>{{ team_sheet.player4_jersey }}</td>
+            </tr>
+
+            <tr>
+                <td>5</td>
+                <td>{{ team_sheet.player5_name }}</td>
+                <td>{{ team_sheet.player5_position }}</td>
+                <td>{{ team_sheet.player5_jersey }}</td>
+            </tr>
+
+            <tr>
+                <td>6</td>
+                <td>{{ team_sheet.player6_name }}</td>
+                <td>{{ team_sheet.player6_position }}</td>
+                <td>{{ team_sheet.player6_jersey }}</td>
+            </tr>
+
+            <tr>
+                <td>7</td>
+                <td>{{ team_sheet.player7_name }}</td>
+                <td>{{ team_sheet.player7_position }}</td>
+                <td>{{ team_sheet.player7_jersey }}</td>
+            </tr>
+
+            <tr>
+                <td>8</td>
+                <td>{{ team_sheet.player8_name }}</td>
+                <td>{{ team_sheet.player8_position }}</td>
+                <td>{{ team_sheet.player8_jersey }}</td>
+            </tr>
+
+            <tr>
+                <td>9</td>
+                <td>{{ team_sheet.player9_name }}</td>
+                <td>{{ team_sheet.player9_position }}</td>
+                <td>{{ team_sheet.player9_jersey }}</td>
+            </tr>
+
+            <tr>
+                <td>10</td>
+                <td>{{ team_sheet.player10_name }}</td>
+                <td>{{ team_sheet.player10_position }}</td>
+                <td>{{ team_sheet.player10_jersey }}</td>
+            </tr>
+
+            <tr>
+                <td>11</td>
+                <td>{{ team_sheet.player11_name }}</td>
+                <td>{{ team_sheet.player11_position }}</td>
+                <td>{{ team_sheet.player11_jersey }}</td>
+            </tr>
+
+            <tr>
+
+                <td colspan="4" class="section-title">
+
+                    SUBSTITUTES
+
+                </td>
+
+            </tr>
+
+            <tr>
+                <td>12</td>
+                <td>{{ team_sheet.sub1_name }}</td>
+                <td>{{ team_sheet.sub1_position }}</td>
+                <td>{{ team_sheet.sub1_jersey }}</td>
+            </tr>
+
+            <tr>
+                <td>13</td>
+                <td>{{ team_sheet.sub2_name }}</td>
+                <td>{{ team_sheet.sub2_position }}</td>
+                <td>{{ team_sheet.sub2_jersey }}</td>
+            </tr>
+
+            <tr>
+                <td>14</td>
+                <td>{{ team_sheet.sub3_name }}</td>
+                <td>{{ team_sheet.sub3_position }}</td>
+                <td>{{ team_sheet.sub3_jersey }}</td>
+            </tr>
+
+            <tr>
+                <td>15</td>
+                <td>{{ team_sheet.sub4_name }}</td>
+                <td>{{ team_sheet.sub4_position }}</td>
+                <td>{{ team_sheet.sub4_jersey }}</td>
+            </tr>
+
+            <tr>
+                <td>16</td>
+                <td>{{ team_sheet.sub5_name }}</td>
+                <td>{{ team_sheet.sub5_position }}</td>
+                <td>{{ team_sheet.sub5_jersey }}</td>
+            </tr>
+
+            <tr>
+                <td>17</td>
+                <td>{{ team_sheet.sub6_name }}</td>
+                <td>{{ team_sheet.sub6_position }}</td>
+                <td>{{ team_sheet.sub6_jersey }}</td>
+            </tr>
+
+            <tr>
+                <td>18</td>
+                <td>{{ team_sheet.sub7_name }}</td>
+                <td>{{ team_sheet.sub7_position }}</td>
+                <td>{{ team_sheet.sub7_jersey }}</td>
+            </tr>
+
+            <tr>
+                <td>19</td>
+                <td>{{ team_sheet.sub8_name }}</td>
+                <td>{{ team_sheet.sub8_position }}</td>
+                <td>{{ team_sheet.sub8_jersey }}</td>
+            </tr>
+
+            <tr>
+                <td>20</td>
+                <td>{{ team_sheet.sub9_name }}</td>
+                <td>{{ team_sheet.sub9_position }}</td>
+                <td>{{ team_sheet.sub9_jersey }}</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <button
+        class="print-btn"
+        onclick="window.print()"
+    >
+
+        Print Team Sheet
+
+    </button>
+
+</body>
+
+</html>

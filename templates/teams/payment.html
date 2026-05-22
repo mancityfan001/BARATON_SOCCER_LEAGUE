@@ -1,0 +1,38 @@
+{% if messages %}
+
+    {% for message in messages %}
+
+        <div style="
+            background: lightgreen;
+            padding: 10px;
+            margin-bottom: 10px;
+        ">
+            {{ message }}
+        </div>
+
+    {% endfor %}
+
+{% endif %}
+<form method="POST">
+    {% csrf_token %}
+
+    <label>Select Team</label>
+    <select name="team">
+        {% for team in teams %}
+        <option value="{{ team.id }}">
+            {{ team.name }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <label>Amount Paid</label>
+    <input type="number" name="amount_paid" required>
+
+    <label>Mpesa Code</label>
+    <input type="text" name="mpesa_code" required>
+
+    <button type="submit">
+        Submit Payment
+    </button>
+
+</form>

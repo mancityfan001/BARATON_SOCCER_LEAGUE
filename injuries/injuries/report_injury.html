@@ -1,0 +1,54 @@
+<h2>Report Injury</h2>
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    <label>Player</label>
+
+    <select name="player">
+
+        {% for player in players %}
+
+        <option value="{{ player.id }}">
+            {{ player }}
+        </option>
+
+        {% endfor %}
+
+    </select>
+
+    <br><br>
+
+    <label>Injury Type</label>
+
+    <input type="text" name="injury_type">
+
+    <br><br>
+
+    <label>Description</label>
+
+    <textarea name="description"></textarea>
+
+    <br><br>
+
+    <label>Injury Date</label>
+
+    <input type="date" name="injury_date">
+
+    <br><br>
+
+    <label>Expected Return Date</label>
+
+    <input
+        type="date"
+        name="expected_return_date"
+    >
+
+    <br><br>
+
+    <button type="submit">
+        Report Injury
+    </button>
+
+</form>
