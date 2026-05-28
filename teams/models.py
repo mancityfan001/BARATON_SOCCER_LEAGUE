@@ -1,5 +1,8 @@
 from django.db import models
+from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model
 
+from baraton_soccer_league import settings
 
 class Team(models.Model):
 
@@ -55,3 +58,53 @@ class TeamPayment(models.Model):
 
     def __str__(self):
         return f"{self.team} - {self.mpesa_code}"
+    
+    from django.contrib.auth import get_user_model
+from django.shortcuts import render, redirect
+
+User = get_user_model()
+
+def referee_login(request):
+
+    if request.method == "POST":
+
+        username = request.POST.get('username')
+        full_name = request.POST.get('full_name')
+        license_number = request.POST.get('license_number')
+        phone = request.POST.get('phone')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
+
+        user.first_name = full_name
+        user.save()
+
+        return redirect('/referee-login/')
+
+    return render(request, 'teams/referee_login.html')
+
+class RefereeProfile(models.Model):
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+
+    full_name = models.CharField(max_length=100)
+
+    license_number = models.CharField(
+        max_length=50,
+        unique=True
+    )
+
+    phone_number = models.CharField(max_length=20)
+
+    is_verified = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.full_name

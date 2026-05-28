@@ -55,27 +55,53 @@
         <h3>Total Games Officiated</h3>
         <p>{{ games_officiated }}</p>
 
-        <h3>Upcoming Matches</h3>
-        <p>{{ upcoming_matches }}</p>
-
     </div>
 
     <div class="card">
 
-        <h3>Assigned Matches</h3>
+    <h3>Assigned Matches</h3>
 
-        <ul>
+    <table>
 
-            {% for match in assigned_matches %}
+        <tr>
+            <th>Home Team</th>
+            <th>Away Team</th>
+            <th>Date</th>
+            <th>Venue</th>
+            <th>Status</th>
+            <th>Center Referee</th>
+            <th>Assistant Referee_one</th>
+            <th>Assistant Referee_two</th>
+            <th>Commissioner</th>
+        </tr>
 
-                <li>{{ match }}</li>
+        {% for match in assigned_matches %}
 
-            {% endfor %}
+        <tr>
+            <td>{{ match.home_team }}</td>
+            <td>{{ match.away_team }}</td>
+            <td>{{ match.match_date }}</td>
+            <td>{{ match.venue }}</td>
+            <td>{{ match.status }}</td>
+            <td>
+                center:{{ match.center_referee }} <br>
+                AR1:{{ match.assistant_referee_one }} <br>
+                AR2:{{ match.assistant_referee_two }} <br>
+                commissioner:{{ match.commissioner }}
+            </td>
+        </tr>
 
-        </ul>
+        {% empty %}
 
-    </div>
+        <tr>
+            <td colspan="5">No matches assigned yet</td>
+        </tr>
 
+        {% endfor %}
+
+    </table>
+
+</div>
     <div class="card">
 
         <h3>Match Reports</h3>

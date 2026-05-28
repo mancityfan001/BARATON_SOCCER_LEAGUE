@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class Match(models.Model):
@@ -7,7 +8,9 @@ class Match(models.Model):
 
         ('Pending', 'Pending'),
 
-        ('Played', 'Played'),
+        ('live', 'Live'),
+
+        ('completed', 'Completed'),
 
     )
 
@@ -43,6 +46,38 @@ class Match(models.Model):
 
     )
 
+    center_referee = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    related_name='center_referee_matches'
+)
+
+    assistant_referee_one = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    related_name='assistant_referee_one_matches'
+)
+
+    assistant_referee_two = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    related_name='assistant_referee_two_matches'
+)
+
+    match_commissioner = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    related_name='commissioner_matches'
+)
+
     venue = models.CharField(
 
         max_length=100
@@ -61,23 +96,23 @@ class Match(models.Model):
 
     )
 
-    created_at = models.DateTimeField(
+created_at = models.DateTimeField(
 
         auto_now_add=True
 
     )
 
-    def __str__(self):
+def __str__(self):
 
         return f"{self.home_team} vs {self.away_team}"
     
-    def save(self, *args, **kwargs):
+def save(self, *args, **kwargs):
         # Save the match first
         super().save(*args, **kwargs)
 
         # Recalculate team statistics from all played matches
-        # Note: status value for completed matches is 'Played'
-        matches = Match.objects.filter(status='Played')
+        # Note: status value for completed matches is 'Completed'
+        matches = Match.objects.filter(status='Completed')
 
         # Reset all related teams' stats used below before recomputing
         teams = set()

@@ -12,8 +12,10 @@ class MatchAdmin(admin.ModelAdmin):
     list_display = (
         'home_team',
         'away_team',
-        'home_score',
-        'away_score',
+        'center_referee',
+        'assistant_referee_one',
+        'assistant_referee_two',
+        'match_commissioner',
         'status',
         'match_date',
     )

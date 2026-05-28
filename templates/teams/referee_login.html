@@ -46,23 +46,64 @@
 
 <div class="container">
 
-    <h1>Referee Login</h1>
+    <h1>Referee Registration</h1>
 
     <form method="POST">
 
         {% csrf_token %}
 
-        <input type="text" name="username" placeholder="Username">
+        <input type="text"
+               name="username"
+               placeholder="Username"
+               required>
 
-        <input type="password" name="password" placeholder="Password">
+        <br><br>
+
+        <input type="text"
+               name="full_name"
+               placeholder="Full Name"
+               required>
+
+        <br><br>
+
+        <input type="text"
+               name="license_number"
+               placeholder="License Number"
+               required>
+
+        <br><br>
+
+        <input type="text"
+               name="phone"
+               placeholder="Phone Number"
+               required>
+
+        <br><br>
+
+        <input type="email"
+               name="email"
+               placeholder="Email"
+               required>
+
+        <br><br>
+
+        <input type="password"
+               name="password"
+               placeholder="Password"
+               required>
+
+        <br><br>
 
         <button type="submit">
-            Login
+            Register
         </button>
 
     </form>
 
-</div>
+    <br>
 
-</body>
-</html>
+    <a href="/referee-login-page/">
+        Already Registered? Login
+    </a>
+
+</div>

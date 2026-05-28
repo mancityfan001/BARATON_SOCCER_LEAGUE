@@ -8,7 +8,8 @@ from players.models import Transfer
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from .models import TeamPayment
-
+from .models import RefereeProfile
+from django.contrib.auth import authenticate, login
 
 # HOME PAGE
 def home(request):
@@ -49,17 +50,34 @@ def home(request):
 
 
 # COACH LOGIN
+from django.contrib.auth import authenticate, login
+
 def coach_login(request):
 
-    if request.method == 'POST':
+    if request.method == "POST":
+
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        if username == 'coach' and password == '1234':
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
+
+        if user is not None and user.role == "coach":
+
+            login(request, user)
+
             return redirect('/dashboard/')
+        
+        else:
+
+            return render(request, 'teams/coach_login.html', {
+                'error': 'Invalid username or password.'
+            })
 
     return render(request, 'teams/coach_login.html')
-
 
 # COACH DASHBOARD
 from players.models import Player
@@ -215,54 +233,139 @@ def team_payment(request):
     )
 
 # REFEREE LOGIN
+from django.contrib.auth import get_user_model, login
+from django.shortcuts import render, redirect
+
+User = get_user_model()
+
 def referee_login(request):
 
-    if request.method == 'POST':
+    if request.method == "POST":
+
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        full_name = request.POST.get('full_name')
+        license_number = request.POST.get('license_number')
+        phone = request.POST.get('phone')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
+
+        user.first_name = full_name
+        user.role = 'referee'
+        user.is_active = False  # Set to False until admin approval
+        user.save()
+
+        RefereeProfile.objects.create(
+            user=user,
+            full_name=full_name,
+            license_number=license_number,
+            phone_number=phone
+        )
+        return redirect('/referee-login/')
+
+    return render(request, 'teams/referee_login.html')
+def referee_login_page(request):
+
+    if request.method == "POST":
 
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        if username == 'referee' and password == '1234':
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
+
+        if user is not None and user.role == "referee":
+
+            login(request, user)
+
             return redirect('/referee-dashboard/')
 
-    return render(request, 'teams/referee_login.html')
+    return render(
+        request,
+        'teams/referee_login_page.html'
+    )
 
 # REFEREE DASHBOARD
+from matches.models import Match
+from django.db import models
+
 def referee_dashboard(request):
 
-    matches = Match.objects.all()
+    referee = request.user
+
+    assigned_matches = Match.objects.filter(
+        models.Q(center_referee=request.user ) |
+        models.Q(assistant_referee_one=request.user ) |
+        models.Q(assistant_referee_two=request.user ) |
+        models.Q(match_commissioner=request.user )
+    ).order_by('match_date')
 
     context = {
-        'matches': matches,
-        'games_count': matches.count()
+        'assigned_matches': assigned_matches
     }
 
-    return render(request, 'teams/referee_dashboard.html', context)
+    return render(
+        request,
+        'teams/referee_dashboard.html',
+        context
+    )
 def approve_payment(request, payment_id):
-
-    payment = get_object_or_404(
-        TeamPayment,
-        id=payment_id
-    )
-
-    payment.payment_status = 'Approved'
+    payment = get_object_or_404(TeamPayment, id=payment_id)
+    payment.status = 'Approved'
     payment.save()
-
-    return HttpResponseRedirect(
-        '/admin/teams/teampayment/'
+    Notification.objects.create(
+        user=request.user,
+        message=f"Your payment for {payment.team.team_name} has been approved."
     )
-
-
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 def reject_payment(request, payment_id):
-
-    payment = get_object_or_404(
-        TeamPayment,
-        id=payment_id
-    )
-
-    payment.payment_status = 'Rejected'
+    payment = get_object_or_404(TeamPayment, id=payment_id)
+    payment.status = 'Rejected'
     payment.save()
+    Notification.objects.create(
+        user=request.user,
+        message=f"Your payment for {payment.team.team_name} has been rejected."
+    )
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+from django.contrib.auth import get_user_model
+from django.shortcuts import render, redirect
 
-    return HttpResponseRedirect(
-        '/admin/teams/teampayment/'
+User = get_user_model()
+
+
+def coach_register(request):
+
+    if request.method == "POST":
+
+        username = request.POST.get('username')
+        full_name = request.POST.get('full_name')
+        email = request.POST.get('email')
+        team_name = request.POST.get('team_name')
+        password = request.POST.get('password')
+
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
+
+        user.first_name = full_name
+        user.role = 'coach'
+        user.is_active = False  # Set to False until admin approval
+        user.save()
+
+        return redirect('/login/')
+
+    return render(
+        request,
+        'teams/coach_register.html'
     )

@@ -82,7 +82,7 @@
             Coach Portal
         </a>
 
-<a href="/referee-login/" class="btn">
+        <a href="/referee-login-page/" class="btn">
             Referee  Portal
         </a>
 
@@ -150,6 +150,10 @@
         <th></th>
         <th>Away Team</th>
         <th>Status</th>
+        <th>Center Referee</th>
+        <th>AR1</th>
+        <th>AR2</th>
+        <th>Commissioner</th>
     </tr>
 
     {% for match in fixtures %}
@@ -164,6 +168,10 @@
         <td>{{ match.away_team }}</td>
 
         <td>{{ match.status }}</td>
+        <td>{{ match.center_referee }}</td>
+        <td>{{ match.assistant_referee_one }}</td>
+        <td>{{ match.assistant_referee_two }}</td>
+        <td>{{ match.commissioner }}</td>
     </tr>
 
     {% empty %}

@@ -12,6 +12,7 @@ urlpatterns = [
 
     # Coach Portal
     path('login/', views.coach_login, name='coach_login'),
+    path( 'coach-register/', views.coach_register, name='coach_register'),
     path('dashboard/', views.coach_dashboard, name='coach_dashboard'),
     path('logout/', views.coach_logout, name='coach_logout'),
 
@@ -19,6 +20,18 @@ urlpatterns = [
     path('request-transfer/', views.request_transfer, name='request_transfer'),
     path('teams/payment/', views.team_payment, name='team_payment'),
 
+    #Referee Portal
+    path('referee-login/', views.referee_login, name='referee_login'),
+    path(
+        'referee-login-page/',
+        views.referee_login_page,
+        name='referee_login_page'
+    ),
+    path(
+        'referee-dashboard/',
+        views.referee_dashboard,
+        name='referee_dashboard'
+    ),
     # Other Apps
     path('notifications/', include('notifications.urls')),
     path('injuries/', include('injuries.urls')),
@@ -39,9 +52,4 @@ urlpatterns = [
         views.reject_payment,
         name='reject_payment'
     ),
-
-    # Referee Portal
-    path('referee-login/', views.referee_login, name='referee_login'),
-    path('referee-dashboard/', views.referee_dashboard, name='referee_dashboard'),
-
 ]

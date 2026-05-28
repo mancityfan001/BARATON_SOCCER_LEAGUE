@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-
+from .models import RefereeProfile
 from .models import Team, TeamPayment
 
 
@@ -70,3 +70,4 @@ class TeamPaymentAdmin(admin.ModelAdmin):
         return "Rejected"
 
     reject_button.short_description = 'Reject'
+    admin.site.register(RefereeProfile)
