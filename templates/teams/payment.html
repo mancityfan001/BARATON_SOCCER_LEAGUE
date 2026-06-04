@@ -13,7 +13,7 @@
     {% endfor %}
 
 {% endif %}
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
 
     <label>Select Team</label>
@@ -30,6 +30,9 @@
 
     <label>Mpesa Code</label>
     <input type="text" name="mpesa_code" required>
+
+    <label>Payment Proof</label>
+    <input type="file" name="payment_proof">
 
     <button type="submit">
         Submit Payment

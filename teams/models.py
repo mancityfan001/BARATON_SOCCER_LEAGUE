@@ -1,12 +1,20 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth import get_user_model
-
+from django.conf import settings
 from baraton_soccer_league import settings
 
 class Team(models.Model):
 
     name = models.CharField(max_length=100)
+
+    coach = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    limit_choices_to={'role': 'coach'}
+)
 
     played = models.IntegerField(default=0)
     wins = models.IntegerField(default=0)
@@ -44,6 +52,12 @@ class TeamPayment(models.Model):
     mpesa_code = models.CharField(
         max_length=20,
         unique=True
+    )
+
+    payment_proof =models.ImageField(
+        upload_to='payment_proofs/',
+        blank=True,
+        null=True
     )
 
     payment_status = models.CharField(

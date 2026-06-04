@@ -1,0 +1,23 @@
+<h1>Transfer Requests</h1>
+
+{% for transfer in transfers %}
+
+<p>
+    {{ transfer.player }}
+    →
+    {{ transfer.to_team }}
+</p>
+
+<a href="{% url 'approve_transfer' transfer.id %}">
+    Approve
+</a>
+
+<a href="{% url 'reject_transfer' transfer.id %}">
+    Reject
+</a>
+
+<hr>
+
+{% empty %}
+<p>No pending requests.</p>
+{% endfor %}

@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class FinanceRecord(models.Model):
@@ -48,6 +49,41 @@ class FinanceRecord(models.Model):
         auto_now_add=True
     )
 
-    def __str__(self):
+    coach = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True
+    )
+
+    transfer = models.ForeignKey(
+        'players.Transfer',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+
+    transaction_code = models.CharField(
+    max_length=50,
+    blank=True
+    )
+
+    payment_proof = models.ImageField(
+    upload_to='payment_proofs/',
+    null=True,
+    blank=True
+    )
+
+    status = models.CharField(
+    max_length=20,
+    choices=(
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+    ),
+     default='Pending'
+)
+
+def __str__(self):
 
         return f"{self.category} - {self.amount}"

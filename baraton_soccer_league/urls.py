@@ -52,4 +52,29 @@ urlpatterns = [
         views.reject_payment,
         name='reject_payment'
     ),
+
+    path(
+    'transfer-requests/',
+    views.transfer_requests,
+    name='transfer_requests'
+    ),
+
+    path(
+        'approve-transfer/<int:transfer_id>/',
+        views.approve_transfer,
+        name='approve_transfer'
+    ),
+
+    path(
+        'reject-transfer/<int:transfer_id>/',
+        views.reject_transfer,
+        name='reject_transfer'
+    ),
+
+    path(
+        'transfer-payment/<int:transfer_id>/',
+        views.transfer_payment,
+        name='transfer_payment'
+    )
+
 ]

@@ -10,6 +10,10 @@ from django.http import HttpResponseRedirect
 from .models import TeamPayment
 from .models import RefereeProfile
 from django.contrib.auth import authenticate, login
+from finance.models import FinanceRecord
+from datetime import date
+from notifications.models import Notification
+from players.models import TransferPayment
 
 # HOME PAGE
 def home(request):
@@ -84,10 +88,30 @@ from players.models import Player
 
 def coach_dashboard(request):
 
-    players = Player.objects.all()
+    team = Team.objects.filter(coach=request.user).first()
+
+    if team:
+        players = Player.objects.filter(team=team)
+
+        pending_transfers = Transfer.objects.filter(
+            from_team=team,
+            status='Pending'
+        )
+
+        approved_transfers = Transfer.objects.filter(
+            to_team=team,
+            status='Approved'  
+        )
+    else:
+        players = Player.objects.none()
+        pending_transfers = Transfer.objects.none()
+        approved_transfers = Transfer.objects.none()
 
     context = {
-        'players': players
+        'players': players,
+        'team': team,
+        'pending_transfers': pending_transfers,
+        'approved_transfers': approved_transfers
     }
 
     return render(
@@ -120,13 +144,16 @@ def register_player(request):
 
         school_id = request.POST.get('school_id')
 
-        team = Team.objects.first()
+        position = request.POST.get('position')
+
+        team = Team.objects.filter(coach=request.user).first()
 
         Player.objects.create(
             player_name=player_name,
             age=age,
             jersey_number=jersey_number,
             school_id=school_id,
+            position=position,
             team=team
         )
 
@@ -155,12 +182,20 @@ def request_transfer(request):
         from_team = Team.objects.get(id=from_team_id)
         to_team = Team.objects.get(id=to_team_id)
 
-        Transfer.objects.create(
+        transfer = Transfer.objects.create(
             player=player,
             from_team=from_team,
             to_team=to_team,
-            transfer_fee=transfer_fee,
             status='Pending'
+        )
+
+        Notification.objects.create(
+         user=from_team.coach,
+         message=f"Transfer request received for {player.player_name} from {from_team.name} to {to_team.name}"
+        )
+        Notification.objects.create(
+            user=request.user,
+            message="Your transfer request has been submitted successfully."
         )
 
         return redirect('/dashboard/')
@@ -192,6 +227,7 @@ def team_payment(request):
         team_id = request.POST.get('team')
         amount_paid = request.POST.get('amount_paid')
         mpesa_code = request.POST.get('mpesa_code')
+        payment_proof = request.FILES.get('payment_proof')
 
         # Check duplicate Mpesa code
         if TeamPayment.objects.filter(mpesa_code=mpesa_code).exists():
@@ -209,6 +245,19 @@ def team_payment(request):
             team=team,
             amount_paid=amount_paid,
             mpesa_code=mpesa_code,
+            payment_proof=payment_proof
+        )
+
+        FinanceRecord.objects.create(
+            category='Team Registration',
+            team=team,
+            amount=amount_paid,
+            description='Team registration payment',
+            transaction_date=date.today(),
+            transaction_code=mpesa_code,
+            payment_proof=payment_proof,
+            status='Pending',
+            coach=request.user
         )
         Notification.objects.create(
              user=request.user,
@@ -368,4 +417,80 @@ def coach_register(request):
     return render(
         request,
         'teams/coach_register.html'
+    )
+from players.models import Transfer
+
+def transfer_requests(request):
+    coach_team = Team.objects.get(coach=request.user)
+
+    transfers = Transfer.objects.filter(
+        from_team=coach_team,
+        status='Pending'
+    )
+
+    return render(
+        request,
+        'teams/transfer_requests.html',
+        {'transfers': transfers}
+    )
+
+
+def approve_transfer(request, transfer_id):
+
+    transfer = Transfer.objects.get(id=transfer_id)
+
+    transfer.status = 'Approved'
+    transfer.save()
+    Notification.objects.create(
+        user=transfer.to_team.coach,
+        message=f"Transfer approved for {transfer.player.player_name}"
+    )
+
+    return redirect('transfer_requests')
+
+
+def reject_transfer(request, transfer_id):
+
+    transfer = Transfer.objects.get(id=transfer_id)
+
+    transfer.status = 'Rejected'
+    transfer.save()
+    Notification.objects.create(
+        user=transfer.to_team.coach,
+        message=f"Transfer rejected for {transfer.player.player_name}"
+    )
+
+    return redirect('transfer_requests')
+def transfer_payment(request, transfer_id):
+
+    transfer = Transfer.objects.get(id=transfer_id)
+
+    if request.method == 'POST':
+
+        amount = request.POST.get('amount')
+        transaction_code = request.POST.get('transaction_code')
+
+        payment = TransferPayment.objects.create(
+            transfer=transfer,
+            amount=amount,
+            transaction_code=transaction_code
+    )
+
+        FinanceRecord.objects.create(
+            category='Player Transfer',
+            transfer=transfer,
+            team=transfer.to_team,
+            coach=transfer.to_team.coach,
+            amount=amount,
+            description=f"Transfer fee for {transfer.player.player_name}",
+            transaction_date=date.today(),
+            transaction_code=transaction_code,
+            status='Pending'
+    )
+        return redirect('coach_dashboard')
+
+    return render(
+        request,
+        'teams/transfer_payment.html',
+        {'transfer': transfer}
     )

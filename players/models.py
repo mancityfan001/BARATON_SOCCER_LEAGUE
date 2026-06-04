@@ -65,6 +65,7 @@ class Transfer(models.Model):
     STATUS_CHOICES = (
         ('Pending', 'Pending'),
         ('Approved', 'Approved'),
+        ('completed', 'Completed'),
         ('Rejected', 'Rejected'),
     )
 
@@ -102,13 +103,45 @@ class Transfer(models.Model):
         super().save(*args, **kwargs)
 
         if self.status == 'Approved':
-            self.player.team = self.to_team
-            self.player.save()
+            pass
 
     def __str__(self):
         return f"{self.player} -> {self.to_team}"
 
+class TransferPayment(models.Model):
 
+    transfer = models.OneToOneField(
+        Transfer,
+        on_delete=models.CASCADE
+    )
+
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+
+    transaction_code = models.CharField(
+        max_length=100
+    )
+
+    proof_of_payment = models.FileField(
+        upload_to='transfer_payments/',
+        null=True,
+        blank=True
+    )
+
+    status = models.CharField(
+        max_length=20,
+        default='Pending'
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return f"Payment for {self.transfer.player}"
+    
 class Card(models.Model):
 
     CARD_CHOICES = (

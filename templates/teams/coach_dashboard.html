@@ -114,6 +114,7 @@
                 <th>School ID</th>
                 <th>Age</th>
                 <th>Jersey Number</th>
+                <th>Position</th>
                 <th>Team</th>
             </tr>
 
@@ -128,6 +129,8 @@
 
                 <td>{{ player.jersey_number }}</td>
 
+                <td>{{ player.position }}</td>
+
                 <td>{{ player.team.name }}</td>
 
             </tr>
@@ -135,6 +138,78 @@
             {% endfor %}
 
         </table>
+
+        <h2>Pending Transfer Requests</h2>
+
+{% for transfer in pending_transfers %}
+
+<div class="card" style="margin-top:20px; padding:15px;">
+    <p>
+        <strong>{{ transfer.player.player_name }}</strong>
+        wants to move from
+        <strong>{{ transfer.from_team.name }}</strong>
+        to
+        <strong>{{ transfer.to_team.name }}</strong>
+    </p>
+
+    <a href="{% url 'approve_transfer' transfer.id %}">
+        <button>Approve</button>
+    </a>
+
+    <a href="{% url 'reject_transfer' transfer.id %}">
+        <button>Reject</button>
+    </a>
+</div>
+
+{% empty %}
+<p>No pending transfer requests.</p>
+{% endfor %}
+
+<h2>Approved Transfers Awaiting Payment</h2>
+
+{% for transfer in approved_transfers %}
+
+    {% if transfer.status == 'Approved' %}
+
+    <div class="card" style="margin-top:20px; padding:15px;">
+
+        <p>
+            <strong>{{ transfer.player.player_name }}</strong>
+            transfer approved.
+        </p>
+
+        <form method="POST" 
+            enctype="multipart/form-data"
+            action="{% url 'transfer_payment' transfer.id %}">
+            {% csrf_token %}
+
+            <input
+                type="number"
+                name="amount"
+                placeholder="Transfer Fee"
+                required
+            >
+
+            <input
+                type="text"
+                name="transaction_code"
+                placeholder="Transaction Code"
+                required
+            >
+
+            <input type="file" name="proof_of_payment" required>
+
+            <button type="submit">
+                Submit Payment
+            </button>
+
+        </form>
+
+    </div>
+
+    {% endif %}
+
+{% endfor %}
 
     </div>
 
