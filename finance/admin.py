@@ -38,7 +38,7 @@ class FinanceRecordAdmin(admin.ModelAdmin):
 
                     transfer = record.transfer
 
-                    transfer.status = 'Completed'
+                    transfer.status = 'Approved'
                     transfer.save()
 
                     player = transfer.player

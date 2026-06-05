@@ -9,6 +9,7 @@ class PlayerAdmin(admin.ModelAdmin):
         'school_id',
         'age',
         'jersey_number',
+        'phone_number',
         'position',
         'goals',
         'assists',

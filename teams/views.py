@@ -101,7 +101,10 @@ def coach_dashboard(request):
         approved_transfers = Transfer.objects.filter(
             to_team=team,
             status='Approved'  
+        ).exclude(
+            transferpayment__status='Approved'
         )
+        print("APPROVED TRANSFERS:", approved_transfers)
     else:
         players = Player.objects.none()
         pending_transfers = Transfer.objects.none()
@@ -146,6 +149,8 @@ def register_player(request):
 
         position = request.POST.get('position')
 
+        phone_number = request.POST.get('phone_number')
+
         team = Team.objects.filter(coach=request.user).first()
 
         Player.objects.create(
@@ -154,6 +159,7 @@ def register_player(request):
             jersey_number=jersey_number,
             school_id=school_id,
             position=position,
+            phone_number=phone_number,
             team=team
         )
 
@@ -469,12 +475,14 @@ def transfer_payment(request, transfer_id):
 
         amount = request.POST.get('amount')
         transaction_code = request.POST.get('transaction_code')
+        proof_of_payment = request.FILES.get('proof_of_payment')
 
         payment = TransferPayment.objects.create(
             transfer=transfer,
             amount=amount,
-            transaction_code=transaction_code
-    )
+            transaction_code=transaction_code,
+            proof_of_payment=proof_of_payment
+        )
 
         FinanceRecord.objects.create(
             category='Player Transfer',
@@ -485,6 +493,7 @@ def transfer_payment(request, transfer_id):
             description=f"Transfer fee for {transfer.player.player_name}",
             transaction_date=date.today(),
             transaction_code=transaction_code,
+            payment_proof=proof_of_payment,
             status='Pending'
     )
         return redirect('coach_dashboard')

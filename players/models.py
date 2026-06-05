@@ -11,6 +11,11 @@ class Player(models.Model):
     school_id = models.CharField(max_length=50)
     age = models.IntegerField(default=18)
     jersey_number = models.IntegerField(default=0)
+    phone_number = models.CharField(
+        max_length=15,
+        blank=True,
+        null=True
+    )
 
     POSITION_CHOICES = (
         ('Goalkeeper', 'Goalkeeper'),
