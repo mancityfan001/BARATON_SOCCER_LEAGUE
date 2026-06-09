@@ -48,6 +48,19 @@
 
         {% csrf_token %}
 
+        {% if error %}
+        <div style="
+            background-color:ffdddd;
+            color: red;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid red;
+            border-radius: 5px;
+        ">
+        {{ error }}
+        </div>
+        {% endif %}
+            
         <input type="text"
                name="username"
                placeholder="Username"
@@ -67,6 +80,17 @@
                name="team_name"
                placeholder="Team Name"
                required>
+
+        <input type="text"
+               name="phone_number"
+               placeholder="Phone Number"
+               required>
+
+        <select name="category" required>
+            <option value="">Select Category</option>
+            <option value="Men">Men's Team</option>
+            <option value="Ladies">Ladies Team</option>
+        </select>
 
         <input type="password"
                name="password"

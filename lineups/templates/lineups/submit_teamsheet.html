@@ -110,15 +110,25 @@
             {% csrf_token %}
 
             <label>Fixture</label>
-            <select name="fixture">
-                <option>Select Fixture</option>
+            <select name="fixture"required>
+                <option value="">Select Fixture</option>
+
+                {% for match in matches %}
+                    <option value="{{ match.id }}">
+                        {{ match.home_team }} vs {{ match.away_team }}
+                         {{ match.match_date|date:"M d, Y H:i" }}
+                    </option>
+                {% endfor %}
             </select>
 
             <label>Team Name</label>
-            <input type="text" name="team">
+            <input type="text" name="team_name">
+
+            <label>Coach Name</label>
+            <input type="text" name="coach_name">
 
             <label>Captain Name</label>
-            <input type="text" name="captain">
+            <input type="text" name="captain_name">
 
             <div class="pitch">
 
@@ -128,27 +138,27 @@
 
                 <div class="player-grid">
 
-                    <input type="text" placeholder="Goalkeeper">
+                    <input type="text"name="goalkeeper" placeholder="Goalkeeper">
 
-                    <input type="text" placeholder="Left Back">
+                    <input type="text" name="left_back" placeholder="Left Back">
 
-                    <input type="text" placeholder="Center Back">
+                    <input type="text" name="center_back_1" placeholder="Center Back">
 
-                    <input type="text" placeholder="Center Back">
+                    <input type="text" name="center_back_2" placeholder="Center Back">
 
-                    <input type="text" placeholder="Right Back">
+                    <input type="text" name="right_back" placeholder="Right Back">
 
-                    <input type="text" placeholder="Midfielder">
+                    <input type="text" name="midfielder_1" placeholder="Midfielder">
 
-                    <input type="text" placeholder="Midfielder">
+                    <input type="text" name="midfielder_2" placeholder="Midfielder">
 
-                    <input type="text" placeholder="Midfielder">
+                    <input type="text" name="midfielder_3" placeholder="Midfielder">
 
-                    <input type="text" placeholder="Left Wing">
+                    <input type="text" name="left_wing" placeholder="Left Wing">
 
-                    <input type="text" placeholder="Striker">
+                    <input type="text" name="striker" placeholder="Striker">
 
-                    <input type="text" placeholder="Right Wing">
+                    <input type="text" name="right_wing" placeholder="Right Wing">
 
                 </div>
 

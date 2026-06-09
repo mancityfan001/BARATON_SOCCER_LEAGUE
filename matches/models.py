@@ -96,17 +96,17 @@ class Match(models.Model):
 
     )
 
-created_at = models.DateTimeField(
+    created_at = models.DateTimeField(
 
         auto_now_add=True
 
     )
 
-def __str__(self):
+    def __str__(self):
 
         return f"{self.home_team} vs {self.away_team}"
-    
-def save(self, *args, **kwargs):
+
+    def save(self, *args, **kwargs):
         # Save the match first
         super().save(*args, **kwargs)
 

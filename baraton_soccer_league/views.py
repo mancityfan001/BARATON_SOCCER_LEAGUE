@@ -17,12 +17,12 @@ def home(request):
     # RECENT MATCHES
     matches = Match.objects.filter(
         status='Played'
-    ).order_by('-match_date')[:10]
+    ).order_by('-match_date')[:6]
 
     # UPCOMING FIXTURES
     fixtures = Match.objects.filter(
         status='Pending'
-    ).order_by('match_date')[:10]
+    ).order_by('match_date')[:6]
 
     # TOP SCORERS
     top_scorers = Player.objects.all().order_by(

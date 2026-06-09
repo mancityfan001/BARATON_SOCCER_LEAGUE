@@ -9,6 +9,9 @@ class TeamAdmin(admin.ModelAdmin):
 
     list_display = (
         'name',
+        'coach',
+        'phone_number',
+        'category',
         'played',
         'wins',
         'draws',

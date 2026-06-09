@@ -14,17 +14,18 @@ from finance.models import FinanceRecord
 from datetime import date
 from notifications.models import Notification
 from players.models import TransferPayment
+from .models import Team
 
 # HOME PAGE
 def home(request):
 
     teams = Team.objects.all().order_by('-points', '-goal_difference')
 
-    matches = Match.objects.all().order_by('-match_date')[:10]
+    matches = Match.objects.all().order_by('-match_date')[:6]
 
     fixtures = Match.objects.filter(
         status='Pending'
-    ).order_by('match_date')[:10]
+    ).order_by('match_date')[:6]
 
     top_scorers = Player.objects.filter(
         goals__gt=0
@@ -85,6 +86,7 @@ def coach_login(request):
 
 # COACH DASHBOARD
 from players.models import Player
+from notifications.models import Notification
 
 def coach_dashboard(request):
 
@@ -110,11 +112,17 @@ def coach_dashboard(request):
         pending_transfers = Transfer.objects.none()
         approved_transfers = Transfer.objects.none()
 
+    unread_count = Notification.objects.filter(
+            user=request.user,
+            is_read=False
+        ).count()
+
     context = {
         'players': players,
         'team': team,
         'pending_transfers': pending_transfers,
-        'approved_transfers': approved_transfers
+        'approved_transfers': approved_transfers,
+        'unread_count': unread_count
     }
 
     return render(
@@ -406,6 +414,17 @@ def coach_register(request):
         email = request.POST.get('email')
         team_name = request.POST.get('team_name')
         password = request.POST.get('password')
+        phone = request.POST.get('phone_number')
+        category = request.POST.get('category')
+
+        if Team.objects.filter(name__iexact=team_name).exists():
+            return render (
+                request,
+                'teams/coach_register.html',
+                {
+                    'error': 'A team with this name already exists.'
+                  }
+            )
 
         user = User.objects.create_user(
             username=username,
@@ -417,6 +436,15 @@ def coach_register(request):
         user.role = 'coach'
         user.is_active = False  # Set to False until admin approval
         user.save()
+
+        Team.objects.get_or_create(
+            name=team_name,
+            defaults={
+                'coach': user,
+                'phone_number': phone,
+                'category': category
+            }
+        )
 
         return redirect('/login/')
 

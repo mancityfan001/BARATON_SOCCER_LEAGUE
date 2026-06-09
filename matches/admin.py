@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.urls import path
+from django.shortcuts import redirect
 from django.utils import timezone
 from datetime import timedelta
 
@@ -8,7 +10,10 @@ from teams.models import Team
 
 @admin.register(Match)
 class MatchAdmin(admin.ModelAdmin):
+    change_list_template = 'admin/matches/match/change_list.html'
 
+    ordering= ('match_date',)
+    
     list_display = (
         'home_team',
         'away_team',
@@ -22,6 +27,19 @@ class MatchAdmin(admin.ModelAdmin):
 
     actions = ['generate_fixtures']
 
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                'generate-fixtures/',
+                self.admin_site.admin_view(
+                    self.generate_fixtures_view
+                    ),
+                name='generate-fixtures',
+            ),
+        ]
+        return custom_urls + urls
+    
     def generate_fixtures(self, request, queryset):
 
         # DELETE OLD FIXTURES
@@ -78,6 +96,13 @@ class MatchAdmin(admin.ModelAdmin):
     generate_fixtures.short_description = (
         "Generate Double Round Robin Fixtures"
     )
+
+    def generate_fixtures_view(self, request):
+        self.generate_fixtures(
+            request, 
+            Match.objects.none()
+        )
+        return redirect('..')
 
 
 @admin.register(MatchReport)

@@ -6,6 +6,11 @@ from baraton_soccer_league import settings
 
 class Team(models.Model):
 
+    CATEGORY_CHOICES = (
+        ('Men', 'Men'),
+        ('Ladies', 'Ladies'),
+    )
+    
     name = models.CharField(max_length=100)
 
     coach = models.ForeignKey(
@@ -15,6 +20,18 @@ class Team(models.Model):
     blank=True,
     limit_choices_to={'role': 'coach'}
 )
+
+    phone_number = models.CharField(
+        max_length=15,
+        blank=True,
+        null=True
+    )
+
+    category = models.CharField(
+        max_length=10,
+        choices=CATEGORY_CHOICES,
+        default='Men'
+    )
 
     played = models.IntegerField(default=0)
     wins = models.IntegerField(default=0)
