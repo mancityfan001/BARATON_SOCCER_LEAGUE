@@ -70,7 +70,7 @@ class Transfer(models.Model):
     STATUS_CHOICES = (
         ('Pending', 'Pending'),
         ('Approved', 'Approved'),
-        ('completed', 'Completed'),
+        ('Completed', 'Completed'),
         ('Rejected', 'Rejected'),
     )
 

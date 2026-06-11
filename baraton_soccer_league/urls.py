@@ -39,6 +39,7 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('matches/', include('matches.urls')),
     path('lineups/', include('lineups.urls')),
+    path('complaints/', include('complaints.urls')),
 
     # Payment Approval
     path(

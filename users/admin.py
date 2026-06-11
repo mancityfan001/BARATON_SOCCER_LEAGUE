@@ -10,6 +10,8 @@ class CustomUserAdmin(admin.ModelAdmin):
         'username',
 
         'email',
+        
+        'phone_number',
 
         'role',
 

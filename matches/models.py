@@ -8,9 +8,9 @@ class Match(models.Model):
 
         ('Pending', 'Pending'),
 
-        ('live', 'Live'),
+        ('Live', 'Live'),
 
-        ('completed', 'Completed'),
+        ('Completed', 'Completed'),
 
     )
 

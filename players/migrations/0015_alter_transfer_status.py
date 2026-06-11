@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='transfer',
             name='status',
-            field=models.CharField(choices=[('Pending', 'Pending'), ('Approved', 'Approved'), ('completed', 'Completed'), ('Rejected', 'Rejected')], default='Pending', max_length=20),
+            field=models.CharField(choices=[('Pending', 'Pending'), ('Approved', 'Approved'), ('Completed', 'Completed'), ('Rejected', 'Rejected')], default='Pending', max_length=20),
         ),
     ]

@@ -95,6 +95,25 @@
 
     <div class="section">
 
+        <h2>Announcements</h2>
+
+        <p>Total announcements: {{ announcements|length  }}</p>
+
+        {% for announcement in announcements %}
+            <div style="background:#f5f5f5; padding:10px; margin-bottom:10px;
+            border-radius:5px;">
+                <h3>{{ announcement.title }}</h3>
+                <p>{{ announcement.message }}</p>
+                <small>{{ announcement.created_at }}</small>
+            </div>
+        {% empty %}
+            <p>No announcements available.</p>
+        {% endfor %}
+
+        </div>
+        
+    <div class="section">
+        
         <h2>League Table</h2>
 
         <table>

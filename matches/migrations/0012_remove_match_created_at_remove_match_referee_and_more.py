@@ -44,6 +44,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='match',
             name='status',
-            field=models.CharField(choices=[('Pending', 'Pending'), ('live', 'Live'), ('completed', 'Completed')], default='Pending', max_length=20),
+            field=models.CharField(choices=[('Pending', 'Pending'), ('Live', 'Live'), ('Completed', 'Completed')], default='Pending', max_length=20),
         ),
     ]

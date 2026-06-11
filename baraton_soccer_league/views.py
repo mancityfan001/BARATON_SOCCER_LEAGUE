@@ -1,11 +1,13 @@
 from django.shortcuts import render
-
+from notifications.models import Announcement, Notification
 from teams.models import Team
 from matches.models import Match
 from players.models import Player
 
 
 def home(request):
+
+    print("HOME VIEW RUNNING")
 
     # LEAGUE TABLE
     teams = Team.objects.all().order_by(
@@ -42,6 +44,11 @@ def home(request):
         'goal_conceded'
     )[:5]
 
+    # NOTIFICATIONS
+    announcements = Announcement.objects.filter(
+        audience='all'
+    ).order_by('-created_at')
+    
     context = {
 
         'teams': teams,
@@ -55,6 +62,8 @@ def home(request):
         'top_assists': top_assists,
 
         'clean_sheets': clean_sheets,
+        
+        'announcements': announcements,
     }
 
     return render(

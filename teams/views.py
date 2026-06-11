@@ -12,9 +12,10 @@ from .models import RefereeProfile
 from django.contrib.auth import authenticate, login
 from finance.models import FinanceRecord
 from datetime import date
-from notifications.models import Notification
+from notifications.models import Notification, Announcement
 from players.models import TransferPayment
 from .models import Team
+from notifications.models import AdminNotification
 
 # HOME PAGE
 def home(request):
@@ -42,6 +43,10 @@ def home(request):
         'goal_conceded'
     )[:5]
 
+    announcements = Announcement.objects.filter(
+        audience='all'
+    ).order_by('-created_at')
+
     context = {
         'teams': teams,
         'matches': matches,
@@ -49,6 +54,7 @@ def home(request):
         'top_scorers': top_scorers,
         'top_assists': top_assists,
         'clean_sheets': clean_sheets,
+        'announcements': announcements,
     }
 
     return render(request, 'core/home.html', context)
@@ -322,6 +328,7 @@ def referee_login(request):
         user.first_name = full_name
         user.role = 'referee'
         user.is_active = False  # Set to False until admin approval
+        user.phone_number = phone  # Set the phone number
         user.save()
 
         RefereeProfile.objects.create(
@@ -434,8 +441,14 @@ def coach_register(request):
 
         user.first_name = full_name
         user.role = 'coach'
+        user.phone_number = phone
         user.is_active = False  # Set to False until admin approval
         user.save()
+
+        AdminNotification.objects.create(
+            title="New Coach Registration",
+            message=f"Coach {full_name} has registered their team {team_name}."
+        )
 
         Team.objects.get_or_create(
             name=team_name,
