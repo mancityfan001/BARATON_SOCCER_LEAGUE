@@ -65,7 +65,7 @@
         </div>
     {% endif %}
 
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
 
         {% csrf_token %}
 
@@ -99,6 +99,11 @@
         <label>Transfer Fee</label>
         <input type="number" name="transfer_fee" step="0.01">
 
+        <label>Transaction Code</label>
+        <input type="text" name="transaction_code">
+
+        <label>Proof of Payment</label>
+        <input type="file" name="proof_of_payment">
        
 
         <button type="submit">

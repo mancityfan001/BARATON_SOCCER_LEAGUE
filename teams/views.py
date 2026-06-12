@@ -93,6 +93,7 @@ def coach_login(request):
 # COACH DASHBOARD
 from players.models import Player
 from notifications.models import Notification
+from complaints.models import Complaint
 
 def coach_dashboard(request):
 
@@ -122,13 +123,21 @@ def coach_dashboard(request):
             user=request.user,
             is_read=False
         ).count()
+    
+    my_complaints = Complaint.objects.filter(
+        coach=request.user
+    ).order_by('-created_at')
+
+    print("CURRENT USER:", request.user)
+    print("MY COMPLAINTS:", my_complaints)
 
     context = {
         'players': players,
         'team': team,
         'pending_transfers': pending_transfers,
         'approved_transfers': approved_transfers,
-        'unread_count': unread_count
+        'unread_count': unread_count,
+        'my_complaints': my_complaints
     }
 
     return render(
@@ -197,6 +206,8 @@ def request_transfer(request):
         from_team_id = request.POST.get('from_team')
         to_team_id = request.POST.get('to_team')
         transfer_fee = request.POST.get('transfer_fee')
+        transaction_code = request.POST.get('transaction_code')
+        proof_of_payment = request.FILES.get('proof_of_payment')
 
         player = Player.objects.get(id=player_id)
         from_team = Team.objects.get(id=from_team_id)
@@ -206,7 +217,14 @@ def request_transfer(request):
             player=player,
             from_team=from_team,
             to_team=to_team,
+            transaction_code=transaction_code,
+            proof_of_payment=proof_of_payment,
             status='Pending'
+        )
+
+        AdminNotification.objects.create(
+            title="Transfer Request",
+            message=f"{from_team.name} requested transfer of {player.player_name} to {to_team.name}"
         )
 
         Notification.objects.create(

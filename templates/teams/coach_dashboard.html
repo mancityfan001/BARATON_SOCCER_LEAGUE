@@ -222,5 +222,41 @@
 
 </div>
 
+<hr>
+
+<h2>My Complaints</h2>
+
+{% for complaint in my_complaints %}
+<p>SUBJECT: {{ complaint.subject }}</p>
+<p>RESPONSE: {{ complaint.admin_response }}</p>
+<hr>
+<div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+
+    <h3>{{ complaint.subject }}</h3>
+
+    <p>
+        <strong>Status:</strong>
+        {{ complaint.status }}
+    </p>
+
+    <p>
+        <strong>Complaint:</strong><br>
+        {{ complaint.message }}
+    </p>
+
+    {% if complaint.admin_response %}
+        <p>
+            <strong>Admin Response:</strong><br>
+            {{ complaint.admin_response }}
+        </p>
+    {% else %}
+        <p><em>Waiting for admin response...</em></p>
+    {% endif %}
+
+</div>
+{% empty %}
+<p>No complaints submitted yet.</p>
+{% endfor %}
+
 </body>
 </html>

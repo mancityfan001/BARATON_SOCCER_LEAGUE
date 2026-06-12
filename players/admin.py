@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Player, Card, Transfer
+from notifications.models import Notification
 
 
 @admin.register(Player)
@@ -36,5 +37,39 @@ class TransferAdmin(admin.ModelAdmin):
         'player',
         'from_team',
         'to_team',
+        'transaction_code',
         'status',
     )
+
+    readonly_fields = (
+        'proof_of_payment',
+    )
+
+    def save_model(self, request, obj, form, change):
+
+        old_obj = None
+
+        if obj.pk:
+            old_obj = Transfer.objects.get(pk=obj.pk)
+
+        super().save_model(request, obj, form, change)
+
+        if (
+            old_obj
+            and old_obj.status != "Approved"
+            and obj.status == "Approved"
+        ):
+            player = obj.player
+
+            player.team = obj.to_team
+            player.save()
+
+            Notification.objects.create(
+                user=obj.to_team.coach,
+                message=f"Transfer approved for {player.player_name}"
+            )
+
+            Notification.objects.create(
+                user=obj.to_team.coach,
+                message=f"{player.player_name} has joined your team."
+            )

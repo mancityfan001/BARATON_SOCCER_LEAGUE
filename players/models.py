@@ -91,7 +91,18 @@ class Transfer(models.Model):
         related_name='to_team'
     )
 
-    reason = models.TextField()
+    transaction_code = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    proof_of_payment = models.ImageField(
+        upload_to='transfer_proofs/',
+        blank=True,
+        null=True
+    )
+
 
     status = models.CharField(
         max_length=20,
