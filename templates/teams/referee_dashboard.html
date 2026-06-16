@@ -83,12 +83,12 @@
             <td>{{ match.match_date }}</td>
             <td>{{ match.venue }}</td>
             <td>{{ match.status }}</td>
-            <td>
-                center:{{ match.center_referee }} <br>
-                AR1:{{ match.assistant_referee_one }} <br>
-                AR2:{{ match.assistant_referee_two }} <br>
-                commissioner:{{ match.commissioner }}
-            </td>
+
+            <td>{{ match.center_referee }}</td>
+            <td>{{ match.assistant_referee_one }}</td> 
+            <td>{{ match.assistant_referee_two}}</td>
+            <td>{{ match.commissioner }}</td> 
+            
         </tr>
 
         {% empty %}
@@ -106,9 +106,11 @@
 
         <h3>Match Reports</h3>
 
+    <a href="{% url 'submit_match_report' %}">
         <button>
             Submit Match Report
         </button>
+    <a/>
 
     </div>
 

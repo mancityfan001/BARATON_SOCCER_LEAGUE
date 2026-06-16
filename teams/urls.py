@@ -20,6 +20,13 @@ urlpatterns = [
         views.referee_dashboard,
         name='referee_dashboard'
     ),
+
+    path(
+        'submit-match-report/',
+        views.submit_match_report,
+        name='submit_match_report'
+    ),
+    
     path(
         'transfer-requests/',
         views.transfer_requests,

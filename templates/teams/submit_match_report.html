@@ -1,0 +1,31 @@
+<h1>Submit Match Report</h1>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <label>Match</label>
+    <select name="match">
+        {% for match in matches %}
+        <option value="{{ match.id }}">
+            {{ match.home_team }} vs {{ match.away_team }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <br><br>
+
+    <label>Referee Comments</label><br>
+    <textarea name="comments" rows="5" cols="50"></textarea>
+
+    <br><br>
+
+    <label>Incidents</label><br>
+    <textarea name="incidents" rows="5" cols="50"></textarea>
+
+    <br><br>
+
+    <button type="submit">
+        Submit Report
+    </button>
+
+</form>

@@ -406,6 +406,40 @@ def referee_dashboard(request):
         'teams/referee_dashboard.html',
         context
     )
+
+from django.shortcuts import redirect
+from matches.models import MatchReport
+
+def submit_match_report(request):
+
+    if request.method == 'POST':
+
+        match_id = request.POST.get('match')
+        comments = request.POST.get('comments')
+        incidents = request.POST.get('incidents')
+
+        match = Match.objects.get(id=match_id)
+
+        MatchReport.objects.create(
+            match=match,
+            referee_comments=comments,
+            incidents=incidents
+        )
+
+        return redirect('referee_dashboard')
+
+    matches = Match.objects.filter(
+        status='Completed'
+    )
+
+    return render(
+        request,
+        'teams/submit_match_report.html',
+        {
+            'matches': matches
+        }
+    )
+
 def approve_payment(request, payment_id):
     payment = get_object_or_404(TeamPayment, id=payment_id)
     payment.status = 'Approved'
@@ -542,7 +576,9 @@ def transfer_payment(request, transfer_id):
             transaction_code=transaction_code,
             proof_of_payment=proof_of_payment
         )
-
+        transfer.transaction_code =transaction_code
+        transfer.proof_of_payment =proof_of_payment
+        transfer.save()
         FinanceRecord.objects.create(
             category='Player Transfer',
             transfer=transfer,

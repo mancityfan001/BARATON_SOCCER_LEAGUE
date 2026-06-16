@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 from teams import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
 
@@ -27,11 +29,19 @@ urlpatterns = [
         views.referee_login_page,
         name='referee_login_page'
     ),
+
     path(
         'referee-dashboard/',
         views.referee_dashboard,
         name='referee_dashboard'
     ),
+
+    path(
+        'submit-match-report/',
+        views.submit_match_report,
+        name='submit_match_report'
+    ),
+    
     # Other Apps
     path('notifications/', include('notifications.urls')),
     path('injuries/', include('injuries.urls')),
@@ -79,3 +89,9 @@ urlpatterns = [
     )
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
+    )

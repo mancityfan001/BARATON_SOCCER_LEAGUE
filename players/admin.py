@@ -56,8 +56,8 @@ class TransferAdmin(admin.ModelAdmin):
 
         if (
             old_obj
-            and old_obj.status != "Approved"
-            and obj.status == "Approved"
+            and old_obj.status != "Completed"
+            and obj.status == "Completed"
         ):
             player = obj.player
 
