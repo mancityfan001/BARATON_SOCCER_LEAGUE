@@ -190,3 +190,39 @@ class MatchReport(models.Model):
     def __str__(self):
 
         return f"Report - {self.match}"
+    
+from players.models import Player
+
+
+class Goal(models.Model):
+    match = models.ForeignKey(
+        Match,
+        on_delete=models.CASCADE,
+        related_name='goals'
+    )
+
+    player = models.ForeignKey(
+        Player,
+        on_delete=models.CASCADE
+    )
+
+    minute = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.player.player_name}"
+    
+
+class CleanSheet(models.Model):
+
+    match = models.ForeignKey(
+         Match,
+         on_delete=models.CASCADE
+    )
+
+    goalkeeper = models.ForeignKey(
+         Player,
+         on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+         return self.goalkeeper.player_name

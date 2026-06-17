@@ -3,7 +3,7 @@ from django.urls import path
 from django.shortcuts import redirect
 from django.utils import timezone
 from datetime import timedelta
-
+from .models import CleanSheet
 from .models import Match, MatchReport
 from teams.models import Team
 
@@ -111,4 +111,11 @@ class MatchReportAdmin(admin.ModelAdmin):
     list_display = (
         'match',
         'created_at',
+    )
+
+@admin.register(CleanSheet)
+class CleanSheetAdmin(admin.ModelAdmin):
+    list_display = (
+        'match',
+        'goalkeeper',
     )

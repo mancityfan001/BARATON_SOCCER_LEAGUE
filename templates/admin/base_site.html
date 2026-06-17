@@ -1,0 +1,16 @@
+{% extends "admin/base.html" %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        Baraton Soccer League Admin
+    </a>
+
+    <span style="float:right; margin-right:20px;">
+        🔔
+        <a href="/admin/notifications/adminnotification/">
+            Notifications ({{ unread_notifications }})
+        </a>
+    </span>
+</h1>
+{% endblock %}

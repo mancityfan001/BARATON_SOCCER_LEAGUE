@@ -6,9 +6,79 @@
     <label>Match</label>
     <select name="match">
         {% for match in matches %}
-        <option value="{{ match.id }}">
-            {{ match.home_team }} vs {{ match.away_team }}
-        </option>
+            <option value="{{ match.id }}">
+                {{ match.home_team }} vs {{ match.away_team }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <br><br>
+
+    <label>Home Score</label>
+    <input type="number" name="home_score" min="0" required>
+
+    <br><br>
+
+    <label>Away Score</label>
+    <input type="number" name="away_score" min="0" required>
+
+    <br><br>
+
+    <label>Goal Scorer</label>
+    <select name="goal_scorer">
+        {% for player in players %}
+            <option value="{{ player.id }}">
+                {{ player.player_name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <br><br>
+
+    <label>Assist Provider</label>
+    <select name="assist_player">
+        {% for player in players %}
+            <option value="{{ player.id }}">
+                {{ player.player_name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <br><br>
+
+    <label>Clean Sheet Goalkeeper</label>
+    <select name="clean_sheet_keeper">
+        <option value="">None</option>
+        {% for player in players %}
+            {% if player.position == "Goalkeeper" %}
+                <option value="{{ player.id }}">
+                    {{ player.player_name }}
+                </option>
+            {% endif %}
+        {% endfor %}
+    </select>
+
+    <br><br>
+
+    <label>Yellow Card Player</label>
+    <select name="yellow_card_player">
+        <option value="">None</option>
+        {% for player in players %}
+            <option value="{{ player.id }}">
+                {{ player.player_name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <br><br>
+
+    <label>Red Card Player</label>
+    <select name="red_card_player">
+        <option value="">None</option>
+        {% for player in players %}
+            <option value="{{ player.id }}">
+                {{ player.player_name }}
+            </option>
         {% endfor %}
     </select>
 

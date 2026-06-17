@@ -286,6 +286,10 @@ def team_payment(request):
             payment_proof=payment_proof
         )
 
+        AdminNotification.objects.create(
+            title="Team Registration Payment",
+            message=f"{team.name} submitted a registration payment of KES{amount_paid}. {mpesa_code}"
+        )
         FinanceRecord.objects.create(
             category='Team Registration',
             team=team,
@@ -355,6 +359,12 @@ def referee_login(request):
             license_number=license_number,
             phone_number=phone
         )
+
+        AdminNotification.objects.create(
+            title="New Referee Registration",
+            message=f"{request.user.username} registered as a referee."
+        )
+
         return redirect('/referee-login/')
 
     return render(request, 'teams/referee_login.html')
@@ -408,35 +418,77 @@ def referee_dashboard(request):
     )
 
 from django.shortcuts import redirect
-from matches.models import MatchReport
+from matches.models import MatchReport, CleanSheet
 
 def submit_match_report(request):
 
-    if request.method == 'POST':
+    if request.method == "POST":
 
-        match_id = request.POST.get('match')
-        comments = request.POST.get('comments')
-        incidents = request.POST.get('incidents')
+        match_id = request.POST.get("match")
+        comments = request.POST.get("comments")
+        incidents = request.POST.get("incidents")
+
+        home_score = int(request.POST.get("home_score"))
+        away_score = int(request.POST.get("away_score"))
+
+        goal_scorer_id = request.POST.get("goal_scorer")
+        assist_player_id = request.POST.get("assist_player")
+        clean_sheet_keeper_id = request.POST.get("clean_sheet_keeper")
 
         match = Match.objects.get(id=match_id)
 
+        # Update match score
+        match.home_score = home_score
+        match.away_score = away_score
+        match.status = "Completed"
+        match.save()
+
+        # Save report
         MatchReport.objects.create(
             match=match,
             referee_comments=comments,
             incidents=incidents
         )
+        AdminNotification.objects.create(
+            title="Match Report Submitted",
+            message=f"Referee submitted a report for {match.home_team} vs {match.away_team}"
+        )
+        # Goal scorer
+        if goal_scorer_id:
+            scorer = Player.objects.get(id=goal_scorer_id)
+            scorer.goals += 1
+            scorer.save()
 
-        return redirect('referee_dashboard')
+        # Assist
+        if assist_player_id:
+            assister = Player.objects.get(id=assist_player_id)
+            assister.assists += 1
+            assister.save()
 
-    matches = Match.objects.filter(
-        status='Completed'
-    )
+        # Clean sheet
+        if clean_sheet_keeper_id:
+            keeper = Player.objects.get(id=clean_sheet_keeper_id)
+
+            CleanSheet.objects.create(
+                match=match,
+                goalkeeper=keeper
+            )
+
+            keeper.clean_sheets += 1
+            keeper.save()
+
+        return redirect("referee_dashboard")
+
+    matches = Match.objects.all()
+
+    players = Player.objects.all()
 
     return render(
         request,
-        'teams/submit_match_report.html',
+        "teams/submit_match_report.html",
         {
-            'matches': matches
+            "matches": matches,
+            "players": players,
         }
     )
 
