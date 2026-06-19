@@ -4,12 +4,17 @@
     {% csrf_token %}
 
     <label>Match</label>
-    <select name="match">
-        {% for match in matches %}
-            <option value="{{ match.id }}">
-                {{ match.home_team }} vs {{ match.away_team }}
-            </option>
-        {% endfor %}
+    <select name="match" onchange="window.location='?match='+this.value">
+    <option value="">Select Match</option>
+
+    {% for match in matches %}
+        <option value="{{ match.id }}">
+        {% if selected_match and selected_match.id == match.id %}
+        selected
+        {% endif %}>
+            {{ match }}
+        </option>
+    {% endfor %}
     </select>
 
     <br><br>
@@ -24,64 +29,61 @@
 
     <br><br>
 
-    <label>Goal Scorer</label>
-    <select name="goal_scorer">
-        {% for player in players %}
-            <option value="{{ player.id }}">
-                {{ player.player_name }}
-            </option>
-        {% endfor %}
-    </select>
+    <label>Goal Scorers</label><br>
+
+    {% for player in players %}
+        <input type="checkbox"
+            name="goal_scorers"
+            value="{{ player.id }}">
+        {{ player.player_name }}
+        <br>
+    {% endfor %}
 
     <br><br>
 
-    <label>Assist Provider</label>
-    <select name="assist_player">
-        {% for player in players %}
-            <option value="{{ player.id }}">
-                {{ player.player_name }}
-            </option>
-        {% endfor %}
-    </select>
+    <label>Assist Providers</label><br>
+
+    {% for player in players %}
+        <input type="checkbox"
+            name="assist_players"
+            value="{{ player.id }}">
+        {{ player.player_name }}
+        <br>
+    {% endfor %}
 
     <br><br>
 
-    <label>Clean Sheet Goalkeeper</label>
-    <select name="clean_sheet_keeper">
-        <option value="">None</option>
-        {% for player in players %}
-            {% if player.position == "Goalkeeper" %}
-                <option value="{{ player.id }}">
-                    {{ player.player_name }}
-                </option>
-            {% endif %}
-        {% endfor %}
-    </select>
+    <label>Clean Sheet Keepers</label><br>
 
+    {% for player in players %}
+        <input type="checkbox"
+            name="clean_sheet_keepers"
+            value="{{ player.id }}">
+        {{ player.player_name }}
+        <br>
+    {% endfor %}
     <br><br>
 
-    <label>Yellow Card Player</label>
-    <select name="yellow_card_player">
-        <option value="">None</option>
-        {% for player in players %}
-            <option value="{{ player.id }}">
-                {{ player.player_name }}
-            </option>
-        {% endfor %}
-    </select>
-
+    <label>Yellow Card Players</label><br>
+    
+    {% for player in players %}
+        <input type="checkbox"
+            name="red_card_players"
+            value="{{ player.id }}">
+        {{ player.player_name }}
+        <br>
+    {% endfor %}
     <br><br>
 
-    <label>Red Card Player</label>
-    <select name="red_card_player">
-        <option value="">None</option>
-        {% for player in players %}
-            <option value="{{ player.id }}">
-                {{ player.player_name }}
-            </option>
-        {% endfor %}
-    </select>
+    <label>Red Card Players</label><br>
 
+    {% for player in players %}
+        <input type="checkbox"
+            name="red_card_players"
+            value="{{ player.id }}">
+        {{ player.player_name }}
+        <br>
+    {% endfor %}
     <br><br>
 
     <label>Referee Comments</label><br>

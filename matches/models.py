@@ -181,6 +181,12 @@ class MatchReport(models.Model):
 
     incidents = models.TextField()
 
+    goal_scorers = models.TextField(blank=True)
+    assist_providers = models.TextField(blank=True)
+    clean_sheet_keepers = models.TextField(blank=True)
+    yellow_card_players = models.TextField(blank=True)
+    red_card_players = models.TextField(blank=True)
+
     created_at = models.DateTimeField(
 
         auto_now_add=True

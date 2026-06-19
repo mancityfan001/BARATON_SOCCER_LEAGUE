@@ -1,7 +1,6 @@
 from django.db import models
 from matches.models import Match
 
-
 from django.db import models
 from teams.models import Team
 

@@ -16,6 +16,7 @@ from notifications.models import Notification, Announcement
 from players.models import TransferPayment
 from .models import Team
 from notifications.models import AdminNotification
+from players.models import Card
 
 # HOME PAGE
 def home(request):
@@ -424,16 +425,48 @@ def submit_match_report(request):
 
     if request.method == "POST":
 
-        match_id = request.POST.get("match")
+        match_id = request.GET.get("match")
         comments = request.POST.get("comments")
         incidents = request.POST.get("incidents")
 
         home_score = int(request.POST.get("home_score"))
         away_score = int(request.POST.get("away_score"))
 
-        goal_scorer_id = request.POST.get("goal_scorer")
-        assist_player_id = request.POST.get("assist_player")
-        clean_sheet_keeper_id = request.POST.get("clean_sheet_keeper")
+        goal_scorer_ids = request.POST.getlist("goal_scorers")
+        assist_player_ids = request.POST.getlist("assist_players")
+        clean_sheet_keeper_ids = request.POST.getlist("clean_sheet_keepers")
+        yellow_card_player_ids = request.POST.getlist("yellow_card_players")
+        red_card_player_ids = request.POST.getlist("red_card_players")
+
+        goal_scorer_names = []
+        for player_id in goal_scorer_ids:
+            if player_id:
+                player = Player.objects.get(id=player_id)
+                goal_scorer_names.append(player.player_name)
+
+        assist_names = []
+        for player_id in assist_player_ids:
+            if player_id:
+                player = Player.objects.get(id=player_id)
+                assist_names.append(player.player_name)
+        
+        clean_sheet_names = []
+        for player_id in clean_sheet_keeper_ids:
+            if player_id:
+                player = Player.objects.get(id=player_id)
+                clean_sheet_names.append(player.player_name)
+
+        yellow_card_names = []
+        for player_id in yellow_card_player_ids:
+            if player_id:
+                player = Player.objects.get(id=player_id)
+                yellow_card_names.append(player.player_name)
+
+        red_card_names = []
+        for player_id in red_card_player_ids:
+            if player_id:
+                player = Player.objects.get(id=player_id)
+                red_card_names.append(player.player_name)
 
         match = Match.objects.get(id=match_id)
 
@@ -447,27 +480,38 @@ def submit_match_report(request):
         MatchReport.objects.create(
             match=match,
             referee_comments=comments,
-            incidents=incidents
+            incidents=incidents,
+            goal_scorers=", ".join(goal_scorer_names),
+            assist_providers=", ".join(assist_names),
+            clean_sheet_keepers=", ".join(clean_sheet_names),
+            yellow_card_players=", ".join(yellow_card_names),
+            red_card_players=", ".join(red_card_names),
         )
         AdminNotification.objects.create(
             title="Match Report Submitted",
             message=f"Referee submitted a report for {match.home_team} vs {match.away_team}"
         )
-        # Goal scorer
-        if goal_scorer_id:
-            scorer = Player.objects.get(id=goal_scorer_id)
+            # Goal scorers
+        for player_id in goal_scorer_ids:
+            if not player_id:
+                continue
+            scorer = Player.objects.get(id=player_id)
             scorer.goals += 1
             scorer.save()
 
-        # Assist
-        if assist_player_id:
-            assister = Player.objects.get(id=assist_player_id)
+        # Assists
+        for player_id in assist_player_ids:
+            if not player_id:
+                continue
+            assister = Player.objects.get(id=player_id)
             assister.assists += 1
             assister.save()
 
-        # Clean sheet
-        if clean_sheet_keeper_id:
-            keeper = Player.objects.get(id=clean_sheet_keeper_id)
+        # Clean sheets
+        for player_id in clean_sheet_keeper_ids:
+            if not player_id:
+                continue
+            keeper = Player.objects.get(id=player_id)
 
             CleanSheet.objects.create(
                 match=match,
@@ -477,11 +521,51 @@ def submit_match_report(request):
             keeper.clean_sheets += 1
             keeper.save()
 
+        # Yellow cards
+        for player_id in yellow_card_player_ids:
+            if not player_id:
+                continue
+            player = Player.objects.get(id=player_id)
+
+            Card.objects.create(
+                player=player,
+                match=match,
+                card_type="Yellow",
+                minute_given=0
+            )
+
+        # Red cards
+        for player_id in red_card_player_ids:
+            if not player_id:
+                continue
+            player = Player.objects.get(id=player_id)
+
+            Card.objects.create(
+                player=player,
+                match=match,
+                card_type="Red",
+                minute_given=0
+            )
+
         return redirect("referee_dashboard")
+
+    
 
     matches = Match.objects.all()
 
-    players = Player.objects.all()
+    selected_match_id = request.GET.get('match')
+
+    players = Player.objects.none()
+
+    if selected_match_id:
+        selected_match = Match.objects.get(id=selected_match_id)
+
+        players = Player.objects.filter(
+            team__in=[
+                selected_match.home_team,
+                selected_match.away_team
+            ]
+        )
 
     return render(
         request,
