@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="text-center mb-4">🏆 League Awards</h2>
+
+    <!-- MEN AWARDS -->
+    <div class="card shadow mb-5">
+        <div class="card-header bg-primary text-white">
+            <h4>Men's League Awards</h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6 mb-4">
+                    <div class="card border-warning">
+                        <div class="card-body">
+                            <h5>⚽ Golden Boot</h5>
+
+                            {% if men_golden_boot %}
+                                <h4>{{ men_golden_boot.player_name }}</h4>
+                                <p>
+                                    Team: {{ men_golden_boot.team.name }}<br>
+                                    Goals: {{ men_golden_boot.goals }}
+                                </p>
+                            {% else %}
+                                <p>No data available.</p>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card border-info">
+                        <div class="card-body">
+
+                            <h5>🎯 Top Playmaker</h5>
+
+                            {% if men_top_playmaker %}
+                                <h4>{{ men_top_playmaker.player_name }}</h4>
+
+                                <p>
+                                    Team: {{ men_top_playmaker.team.name }}<br>
+                                    Assists: {{ men_top_playmaker.assists }}
+                                </p>
+
+                            {% else %}
+                                <p>No data available.</p>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card border-success">
+                        <div class="card-body">
+
+                            <h5>🧤 Golden Glove</h5>
+
+                            {% if men_golden_glove %}
+                                <h4>{{ men_golden_glove.player_name }}</h4>
+
+                                <p>
+                                    Team: {{ men_golden_glove.team.name }}<br>
+                                    Clean Sheets: {{ men_golden_glove.clean_sheets }}
+                                </p>
+
+                            {% else %}
+                                <p>No data available.</p>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card border-dark">
+                        <div class="card-body">
+
+                            <h5>🏆 League Champion</h5>
+
+                            {% if men_champion %}
+                                <h4>{{ men_champion.name }}</h4>
+
+                                <p>
+                                    Points: {{ men_champion.points }}<br>
+                                    Goal Difference:
+                                    {{ men_champion.goal_difference }}
+                                </p>
+
+                            {% else %}
+                                <p>No champion yet.</p>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- LADIES AWARDS -->
+
+    <div class="card shadow">
+
+        <div class="card-header bg-danger text-white">
+            <h4>Ladies League Awards</h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6 mb-4">
+
+                    <div class="card border-warning">
+
+                        <div class="card-body">
+
+                            <h5>⚽ Golden Boot</h5>
+
+                            {% if ladies_golden_boot %}
+                                <h4>{{ ladies_golden_boot.player_name }}</h4>
+
+                                <p>
+                                    Team: {{ ladies_golden_boot.team.name }}<br>
+                                    Goals: {{ ladies_golden_boot.goals }}
+                                </p>
+
+                            {% else %}
+                                <p>No data available.</p>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 mb-4">
+
+                    <div class="card border-info">
+
+                        <div class="card-body">
+
+                            <h5>🎯 Top Playmaker</h5>
+
+                            {% if ladies_top_playmaker %}
+                                <h4>{{ ladies_top_playmaker.player_name }}</h4>
+
+                                <p>
+                                    Team: {{ ladies_top_playmaker.team.name }}<br>
+                                    Assists: {{ ladies_top_playmaker.assists }}
+                                </p>
+
+                            {% else %}
+                                <p>No data available.</p>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 mb-4">
+
+                    <div class="card border-success">
+
+                        <div class="card-body">
+
+                            <h5>🧤 Golden Glove</h5>
+
+                            {% if ladies_golden_glove %}
+                                <h4>{{ ladies_golden_glove.player_name }}</h4>
+
+                                <p>
+                                    Team: {{ ladies_golden_glove.team.name }}<br>
+                                    Clean Sheets:
+                                    {{ ladies_golden_glove.clean_sheets }}
+                                </p>
+
+                            {% else %}
+                                <p>No data available.</p>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 mb-4">
+
+                    <div class="card border-dark">
+
+                        <div class="card-body">
+
+                            <h5>🏆 League Champion</h5>
+
+                            {% if ladies_champion %}
+                                <h4>{{ ladies_champion.name }}</h4>
+
+                                <p>
+                                    Points: {{ ladies_champion.points }}<br>
+                                    Goal Difference:
+                                    {{ ladies_champion.goal_difference }}
+                                </p>
+
+                            {% else %}
+                                <p>No champion yet.</p>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
