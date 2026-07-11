@@ -15,6 +15,7 @@ class MatchAdmin(admin.ModelAdmin):
     ordering= ('match_date',)
     
     list_display = (
+        'category',
         'home_team',
         'away_team',
         'center_referee',
@@ -24,6 +25,11 @@ class MatchAdmin(admin.ModelAdmin):
         'status',
         'match_date',
     )
+
+    def category(self, obj):
+        return obj.home_team.category
+    
+    category.short_description = "category"
 
     actions = ['generate_fixtures']
 
@@ -42,51 +48,140 @@ class MatchAdmin(admin.ModelAdmin):
     
     def generate_fixtures(self, request, queryset):
 
-        # DELETE OLD FIXTURES
-        pending_matches = Match.objects.filter(status='Pending')
-        pending_matches.delete()
-
-        teams = list(Team.objects.all())
-
-        if len(teams) < 2:
-            self.message_user(
-                request,
-                "Add at least 2 teams first."
-            )
-            return
+        # Delete only pending fixtures
+        Match.objects.filter(status="Pending").delete()
 
         start_date = timezone.now()
 
-        # DOUBLE ROUND ROBIN
-        for i in range(len(teams)):
-            for j in range(i + 1, len(teams)):
+        def create_category_fixtures(category):
+            nonlocal start_date
 
-                home_team = teams[i]
-                away_team = teams[j]
+            teams = list(
+                Team.objects.filter(category=category).order_by("id")
+            )
 
-                # FIRST LEG
-                Match.objects.create(
-                    home_team=home_team,
-                    away_team=away_team,
-                    home_score=0,
-                    away_score=0,
-                    status='Pending',
-                    match_date=start_date
+            if len(teams) < 2:
+                return []
+
+            # Add BYE if odd number of teams
+            if len(teams) % 2 == 1:
+                teams.append(None)
+
+            n = len(teams)
+            rounds = n - 1
+            half = n // 2
+
+            rotation = teams[:]
+
+            first_leg = []
+
+            # ---------------- FIRST LEG ----------------
+            for r in range(rounds):
+
+                weekly_matches = []
+
+                for i in range(half):
+
+                    home = rotation[i]
+                    away = rotation[n - 1 - i]
+
+                    if home is None or away is None:
+                        continue
+
+                    # Alternate home advantage
+                    if r % 2 == 1:
+                        home, away = away, home
+
+                    weekly_matches.append((home, away))
+
+                first_leg.append(weekly_matches)
+
+                # Rotate teams
+                rotation = (
+                    [rotation[0]]
+                    + [rotation[-1]]
+                    + rotation[1:-1]
                 )
+    
+            # Save first leg
+            first_leg_matches = []
 
-                start_date += timedelta(days=7)
+            for week in first_leg:
+                for home, away in week:
+                    first_leg_matches.append({
+                        "home": home,
+                        "away": away,
+                        "leg": 1,
+                    })
 
-                # SECOND LEG
-                Match.objects.create(
-                    home_team=away_team,
-                    away_team=home_team,
-                    home_score=0,
-                    away_score=0,
-                    status='Pending',
-                    match_date=start_date
-                )
+            # ---------------- SECOND LEG ----------------
+            second_leg_matches = []
 
-                start_date += timedelta(days=7)
+            for week in first_leg:
+                for home, away in week:
+                    second_leg_matches.append({
+                        "home": away,
+                        "away": home,
+                        "leg": 2,
+                    })
+
+            return first_leg_matches + second_leg_matches   
+
+        # Generate each league separately
+        men_matches = create_category_fixtures("Men")
+        ladies_matches = create_category_fixtures("Ladies")
+
+        all_matches = []
+
+        men_matches = men_matches or []
+        ladies_matches = ladies_matches or []
+
+        men_count = len(men_matches)
+        ladies_count = len(ladies_matches)
+
+        if men_count == 0:
+            all_matches = ladies_matches
+
+        elif ladies_count == 0:
+            all_matches = men_matches
+
+        else:
+            interval = max(1, round(men_count / ladies_count))
+
+            m = 0
+            l = 0
+
+            while m < men_count or l < ladies_count:
+
+                for _ in range(interval):
+                    if m < men_count:
+                        all_matches.append(men_matches[m])
+                        m += 1
+
+                if l < ladies_count:
+                    all_matches.append(ladies_matches[l])
+                    l += 1
+
+            while m < men_count:
+                all_matches.append(men_matches[m])
+                m += 1
+
+            while l < ladies_count:
+                all_matches.append(ladies_matches[l])
+                l += 1
+
+        for fixture in all_matches:
+
+            Match.objects.create(
+                home_team=fixture["home"],
+                away_team=fixture["away"],
+                home_score=0,
+                away_score=0,
+                status="Pending",
+                match_date=start_date,
+            )
+
+            start_date += timedelta(days=7)
 
         self.message_user(
             request,
@@ -110,6 +205,8 @@ class MatchReportAdmin(admin.ModelAdmin):
 
     list_display = (
         'match',
+        'home_score',
+        'away_score',
         'created_at',
     )
 

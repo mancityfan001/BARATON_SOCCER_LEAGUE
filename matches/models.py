@@ -177,6 +177,10 @@ class MatchReport(models.Model):
 
     )
 
+    home_score = models.IntegerField(default=0)
+
+    away_score = models.IntegerField(default=0)
+
     referee_comments = models.TextField()
 
     incidents = models.TextField()

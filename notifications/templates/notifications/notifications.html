@@ -1,5 +1,12 @@
 <h2>Notifications</h2>
 
+<a href="{% url 'clear_all_notifications' %}"
+   style="background:red;color:white;padding:10px 15px;border-radius:5px;text-decoration:none;">
+   🗑️ Clear All Notifications
+</a>
+
+<br><br>
+
 {% for notification in notifications %}
     <div style="border:1px solid gray; padding:10px; margin:10px;">
         <p>{{ notification.message }}</p>

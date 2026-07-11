@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from notifications.models import Announcement, Notification
 from teams.models import Team
 from matches.models import Match
@@ -10,15 +10,21 @@ def home(request):
     print("HOME VIEW RUNNING")
 
     # LEAGUE TABLE
-    teams = Team.objects.all().order_by(
+    men_teams = Team.objects.filter(category='Men').order_by(
         '-points',
         '-goal_difference',
         '-goals_scored'
     )
 
+    ladies_teams = Team.objects.filter(category='Ladies').order_by(
+        '-points',
+        '-goal_difference',
+        '-goals_scored'
+    ) 
+
     # RECENT MATCHES
     matches = Match.objects.filter(
-        status='Played'
+        status='Completed'
     ).order_by('-match_date')[:6]
 
     # UPCOMING FIXTURES
@@ -51,7 +57,9 @@ def home(request):
     
     context = {
 
-        'teams': teams,
+        'men_teams': men_teams,
+
+        'ladies_teams': ladies_teams,
 
         'matches': matches,
 

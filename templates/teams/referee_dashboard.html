@@ -52,6 +52,21 @@
 
         <h1>Referee Dashboard</h1>
 
+        {% if messages %}
+            {% for message in messages %}
+                <div style="
+                    padding:10px;
+                    margin:10px 0;
+                    border-radius:5px;
+                    background-color:#d4edda;
+                    color:#155724;
+                    font-weight:bold;
+                ">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
         <h3>Total Games Officiated</h3>
         <p>{{ games_officiated }}</p>
 
@@ -102,6 +117,21 @@
     </table>
 
 </div>
+
+<h3>Announcements</h3>
+
+{% for announcement in announcements %}
+    <div style="background:#f5f5f5; padding:10px; margin-bottom:10px; border-radius:5px;">
+        <h4>{{ announcement.title }}</h4>
+        <p>{{ announcement.message }}</p>
+        <small>{{ announcement.created_at }}</small>
+    </div>
+
+    {% empty %}
+        <p>No announcements available.</p>
+        {% endfor %}
+    </div>
+
     <div class="card">
 
         <h3>Match Reports</h3>

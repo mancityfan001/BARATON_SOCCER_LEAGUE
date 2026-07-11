@@ -86,7 +86,8 @@ urlpatterns = [
         'transfer-payment/<int:transfer_id>/',
         views.transfer_payment,
         name='transfer_payment'
-    )
+    ),
+
 
 ]
 

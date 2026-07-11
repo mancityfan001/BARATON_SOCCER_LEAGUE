@@ -97,6 +97,7 @@
 
         <h2>Announcements</h2>
 
+       
         <p>Total announcements: {{ announcements|length  }}</p>
 
         {% for announcement in announcements %}
@@ -112,15 +113,16 @@
 
         </div>
         
-    <div class="section">
-        
-        <h2>League Table</h2>
+    <div style="display:flex; gap:30px; flex-wrap:wrap;">
+
+    <!-- Men's League -->
+    <div class="section" style="flex:1; min-width:450px;">
+        <h2 style="text-align:center; color:#0b5ed7;">🏆 Men's League Table</h2>
 
         <table>
-
             <tr>
-                <th>Pos</th>
-                <th>Club</th>
+                <th>#</th>
+                <th>Team</th>
                 <th>P</th>
                 <th>W</th>
                 <th>D</th>
@@ -129,33 +131,53 @@
                 <th>Pts</th>
             </tr>
 
-            {% for team in teams %}
-
+            {% for team in men_teams %}
             <tr>
-
                 <td>{{ forloop.counter }}</td>
-
                 <td>{{ team.name }}</td>
-
                 <td>{{ team.played }}</td>
-
                 <td>{{ team.wins }}</td>
-
                 <td>{{ team.draws }}</td>
-
                 <td>{{ team.losses }}</td>
-
                 <td>{{ team.goal_difference }}</td>
+                <td><strong>{{ team.points }}</strong></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 
-                <td>{{ team.points }}</td>
+    <!-- Ladies League -->
+    <div class="section" style="flex:1; min-width:450px;">
+        <h2 style="text-align:center; color:#e91e63;">🏆 Ladies' League Table</h2>
 
+        <table>
+            <tr>
+                <th>#</th>
+                <th>Team</th>
+                <th>P</th>
+                <th>W</th>
+                <th>D</th>
+                <th>L</th>
+                <th>GD</th>
+                <th>Pts</th>
             </tr>
 
+            {% for team in ladies_teams %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ team.name }}</td>
+                <td>{{ team.played }}</td>
+                <td>{{ team.wins }}</td>
+                <td>{{ team.draws }}</td>
+                <td>{{ team.losses }}</td>
+                <td>{{ team.goal_difference }}</td>
+                <td><strong>{{ team.points }}</strong></td>
+            </tr>
             {% endfor %}
-
         </table>
-
     </div>
+
+</div>
 
     <div class="section">
 
@@ -165,6 +187,7 @@
 
     <tr>
         <th>Date</th>
+        <th>category</th>
         <th>Home Team</th>
         <th></th>
         <th>Away Team</th>
@@ -178,7 +201,10 @@
     {% for match in fixtures %}
 
     <tr>
+
         <td>{{ match.match_date }}</td>
+
+        <td>{{match.home_team.category }}</td>
 
         <td>{{ match.home_team }}</td>
 
@@ -209,9 +235,10 @@
 
 </body>
 </html>
-<div class="section">
+<div style="display:flex; gap:30px; flex-wrap:wrap;">
+    <div class="section" style="flex:1; min-width:450px;">
 
-    <h2>Top Scorers</h2>
+    <h2>🏆 Men's Top Scorers</h2>
 
     <table>
 
@@ -221,7 +248,7 @@
             <th>Goals</th>
         </tr>
 
-        {% for player in top_scorers %}
+        {% for player in men_top_scorers %}
 
         <tr>
 
@@ -239,10 +266,40 @@
 
 </div>
 
+<div class="section" style="flex:1; min-width:450px;">
 
-<div class="section">
+    <h2>🏆 Ladies' Top Scorers</h2>
 
-    <h2>Top Assists</h2>
+    <table>
+
+        <tr>
+            <th>Player</th>
+            <th>Team</th>
+            <th>Goals</th>
+        </tr>
+
+        {% for player in ladies_top_scorers %}
+
+        <tr>
+
+            <td>{{ player.player_name }}</td>
+
+            <td>{{player.team}}</td>
+
+            <td>{{ player.goals }}</td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+</div>
+
+<div style="display:flex; gap:30px; flex-wrap:wrap;">
+    <div class="section" style="flex:1; min-width:450px;">
+        <h2>Men's Top Assists</h2>
 
     <table>
 
@@ -252,7 +309,7 @@
             <th>Assists</th>
         </tr>
 
-        {% for player in top_assists %}
+        {% for player in men_top_assists %}
 
         <tr>
 
@@ -270,10 +327,38 @@
 
 </div>
 
+<div class="section" style="flex:1; min-width:450px;">
+        <h2>Ladies' Top Assists</h2>
 
-<div class="section">
+    <table>
 
-    <h2>Goalkeeper Clean Sheets</h2>
+        <tr>
+            <th>Player</th>
+            <th>Team</th>
+            <th>Assists</th>
+        </tr>
+
+        {% for player in ladies_top_assists %}
+
+        <tr>
+
+            <td>{{ player.player_name }}</td>
+
+            <td>{{ player.team }}</td>
+
+            <td>{{ player.assists }}</td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+<div class="section" style="flex:1; min-width:450px;">
+
+    <h2>Men's Goalkeeper Clean Sheets</h2>
 
     <table>
 
@@ -284,7 +369,40 @@
             <th>Goals Conceded</th>
         </tr>
 
-        {% for player in clean_sheets %}
+        {% for player in men_clean_sheets %}
+
+        <tr>
+
+            <td>{{ player.player_name }}</td>
+
+            <td>{{ player.team }}</td>
+
+            <td>{{ player.clean_sheets }}</td>
+
+            <td>{{ player.goal_conceded }}</td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+<div class="section" style="flex:1; min-width:450px;">
+
+    <h2>Ladies' Goalkeeper Clean Sheets</h2>
+
+    <table>
+
+        <tr>
+            <th>Goalkeeper</th>
+            <th>Team</th>
+            <th>Clean Sheets</th>
+            <th>Goals Conceded</th>
+        </tr>
+
+        {% for player in ladies_clean_sheets %}
 
         <tr>
 

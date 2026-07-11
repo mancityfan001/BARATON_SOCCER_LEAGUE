@@ -9,4 +9,9 @@ urlpatterns = [
         name='notifications'
     ),
 
+    path(
+        'clear-all-notifications/',
+        views.clear_all_notifications,
+        name='clear_all_notifications'
+    ),
 ]

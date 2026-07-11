@@ -1,6 +1,6 @@
 from urllib import request
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 import notifications
 from .models import Notification
@@ -29,3 +29,10 @@ def notifications_page(request):
           'notifications/notifications.html',
             context
     )
+
+def clear_all_notifications(request):
+    Notification.objects.filter(
+        user=request.user
+    ).delete()
+
+    return redirect('notifications')

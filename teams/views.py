@@ -17,11 +17,26 @@ from players.models import TransferPayment
 from .models import Team
 from notifications.models import AdminNotification
 from players.models import Card
+from django.contrib import messages
 
 # HOME PAGE
 def home(request):
 
-    teams = Team.objects.all().order_by('-points', '-goal_difference')
+    men_teams = Team.objects.filter(
+        category='Men'
+    ).order_by(
+        '-points',
+        '-goal_difference',
+        '-goals_scored'
+    )
+
+    ladies_teams = Team.objects.filter(
+        category='Ladies'
+    ).order_by(
+        '-points',
+        '-goal_difference',
+        '-goals_scored'
+    )
 
     matches = Match.objects.all().order_by('-match_date')[:6]
 
@@ -29,15 +44,37 @@ def home(request):
         status='Pending'
     ).order_by('match_date')[:6]
 
-    top_scorers = Player.objects.filter(
+    men_top_scorers = Player.objects.filter(
+        team__category='Men',
         goals__gt=0
     ).order_by('-goals')[:5]
 
-    top_assists = Player.objects.filter(
+    ladies_top_scorers = Player.objects.filter(
+        team__category='Ladies',
+        goals__gt=0
+    ).order_by('-goals')[:5]
+
+
+    men_top_assists = Player.objects.filter(
+        team__category='Men',
         assists__gt=0
     ).order_by('-assists')[:5]
 
-    clean_sheets = Player.objects.filter(
+    ladies_top_assists = Player.objects.filter(
+        team__category='Ladies',
+        assists__gt=0
+    ).order_by('-assists')[:5]
+
+    men_clean_sheets = Player.objects.filter(
+        team__category='Men',
+        position='Goalkeeper'
+    ).order_by(
+        '-clean_sheets',
+        'goal_conceded'
+    )[:5]
+
+    ladies_clean_sheets = Player.objects.filter(
+        team__category='Ladies',
         position='Goalkeeper'
     ).order_by(
         '-clean_sheets',
@@ -49,12 +86,16 @@ def home(request):
     ).order_by('-created_at')
 
     context = {
-        'teams': teams,
+        'men_teams': men_teams,
+        'ladies_teams': ladies_teams,
         'matches': matches,
         'fixtures': fixtures,
-        'top_scorers': top_scorers,
-        'top_assists': top_assists,
-        'clean_sheets': clean_sheets,
+        'men_top_scorers': men_top_scorers,
+        'ladies_top_scorers': ladies_top_scorers,
+        'men_top_assists': men_top_assists,
+        'ladies_top_assists': ladies_top_assists,
+        'men_clean_sheets': men_clean_sheets,
+        'ladies_clean_sheets': ladies_clean_sheets,
         'announcements': announcements,
     }
 
@@ -408,8 +449,19 @@ def referee_dashboard(request):
         models.Q(match_commissioner=request.user )
     ).order_by('match_date')
 
+    announcements = Announcement.objects.filter(
+        audience__in=['all', 'referees']
+    ).order_by('-created_at')
+
+    games_officiated = Match.objects.filter(
+        center_referee=request.user ,
+        status="Completed"
+    ).count()
+
     context = {
-        'assigned_matches': assigned_matches
+        'assigned_matches': assigned_matches,
+        'announcements': announcements,
+        'games_officiated': games_officiated,
     }
 
     return render(
@@ -470,15 +522,79 @@ def submit_match_report(request):
 
         match = Match.objects.get(id=match_id)
 
+        if match.center_referee != request.user:
+            messages.error(
+                request,
+                "Match report can only be submitted by the Center Referee."
+            )
+            return redirect('/referee-dashboard/')
+
         # Update match score
         match.home_score = home_score
         match.away_score = away_score
         match.status = "Completed"
         match.save()
 
+        # ================= UPDATE LEAGUE TABLE =================
+
+        # Prevent duplicate updates
+        if MatchReport.objects.filter(match=match).exists():
+            messages.error(request, "This match has already been reported.")
+            return redirect("referee_dashboard")
+
+        home_team = match.home_team
+        away_team = match.away_team
+
+        home_team.played += 1
+        away_team.played += 1
+
+        home_team.goals_scored += home_score
+        home_team.goals_conceded += away_score
+
+        away_team.goals_scored += away_score
+        away_team.goals_conceded += home_score
+
+        if home_score > away_score:
+            home_team.wins += 1
+            away_team.losses += 1
+            home_team.points += 3
+
+        elif home_score < away_score:
+            away_team.wins += 1
+            home_team.losses += 1
+            away_team.points += 3
+
+        else:
+            home_team.draws += 1
+            away_team.draws += 1
+            home_team.points += 1
+            away_team.points += 1
+
+        home_team.goal_difference = (
+            home_team.goals_scored -
+            home_team.goals_conceded
+        )
+
+        away_team.goal_difference = (
+            away_team.goals_scored -
+            away_team.goals_conceded
+        )
+
+        home_team.save()
+        away_team.save()
+
+        # ================= END LEAGUE TABLE =================
+
+        messages.success(
+            request,
+            "Match report submitted successfully."
+        )
+
         # Save report
         MatchReport.objects.create(
             match=match,
+            home_score=match.home_score,
+            away_score=match.away_score,
             referee_comments=comments,
             incidents=incidents,
             goal_scorers=", ".join(goal_scorer_names),
