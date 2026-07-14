@@ -6,17 +6,22 @@ class FinanceRecord(models.Model):
 
     CATEGORY_CHOICES = (
 
+        # Income
         ('Team Registration', 'Team Registration'),
 
         ('Player Transfer', 'Player Transfer'),
 
-        ('Fine', 'Fine'),
+        # Expenditure
+        ('Individual Awards', 'Individual Awards'),
 
-        ('Sponsorship', 'Sponsorship'),
+        ('Field Marking Lime', 'Field Marking Lime'),
 
-        ('Match Revenue', 'Match Revenue'),
+        # University Support
+        ('Referee Expenses (University)', 'Referee Expenses (University)'),
 
-        ('Expense', 'Expense'),
+        ('Medical Expenses (University)', 'Medical Expenses (University)'),
+
+        ('League Awards (University)', 'League Awards (University)'),
 
     )
 
@@ -54,6 +59,20 @@ class FinanceRecord(models.Model):
     on_delete=models.SET_NULL,
     null=True,
     blank=True
+    )
+
+    player = models.ForeignKey(
+          'players.player',
+          on_delete=models.SET_NULL,
+          null=True,
+          blank=True
+    )
+
+    referee = models.ForeignKey(
+        'teams.RefereeProfile',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
     )
 
     transfer = models.ForeignKey(

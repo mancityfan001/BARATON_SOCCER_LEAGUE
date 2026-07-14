@@ -8,6 +8,8 @@ class FinanceRecordAdmin(admin.ModelAdmin):
 
     list_display = (
         'category',
+        'player' ,
+        'referee',
         'coach',
         'team',
         'amount',
