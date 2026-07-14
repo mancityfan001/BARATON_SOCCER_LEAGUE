@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Baraton Soccer League Reports</title>
+
+    <style>
+
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+            background:#f4f6f9;
+            margin:30px;
+        }
+
+        h1{
+            text-align:center;
+            color:#0B5D3B;
+            margin-bottom:5px;
+        }
+
+        h2{
+            text-align:center;
+            color:#444;
+            margin-bottom:30px;
+        }
+
+        h3{
+            background:#0B5D3B;
+            color:white;
+            padding:10px;
+            border-radius:5px;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            margin-bottom:35px;
+            background:white;
+        }
+
+        table th{
+
+            background:#0B5D3B;
+            color:white;
+            padding:10px;
+            border:1px solid #ddd;
+
+        }
+
+        table td{
+
+            padding:10px;
+            border:1px solid #ddd;
+            text-align:center;
+
+        }
+
+        tr:nth-child(even){
+
+            background:#f9f9f9;
+
+        }
+
+        .print-btn{
+
+            background:#0B5D3B;
+            color:white;
+            border:none;
+            padding:12px 25px;
+            border-radius:5px;
+            cursor:pointer;
+            margin-bottom:30px;
+
+        }
+
+        .print-btn:hover{
+
+            background:#08462d;
+
+        }
+
+        @media print{
+
+            .print-btn{
+
+                display:none;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<h1>BARATON SOCCER LEAGUE MANAGEMENT SYSTEM</h1>
+
+<h2>League Reports</h2>
+
+<button class="print-btn" onclick="window.print()">
+
+Print Report
+
+</button>
+
+<hr>
+
+<h3>Men's League Table</h3>
+
+<table>
+
+<tr>
+
+<th>Position</th>
+<th>Team</th>
+<th>Played</th>
+<th>Won</th>
+<th>Drawn</th>
+<th>Lost</th>
+<th>Goals For</th>
+<th>Goals Against</th>
+<th>Goal Difference</th>
+<th>Points</th>
+
+</tr>
+
+{% for team in men_teams %}
+
+<tr>
+
+<td>{{ forloop.counter }}</td>
+
+<td>{{ team.name }}</td>
+
+<td>{{ team.played }}</td>
+
+<td>{{ team.won }}</td>
+
+<td>{{ team.drawn }}</td>
+
+<td>{{ team.lost }}</td>
+
+<td>{{ team.goals_for }}</td>
+
+<td>{{ team.goals_against }}</td>
+
+<td>{{ team.goal_difference }}</td>
+
+<td><strong>{{ team.points }}</strong></td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<h3>Ladies League Table</h3>
+
+<table>
+
+<tr>
+
+<th>Position</th>
+<th>Team</th>
+<th>Played</th>
+<th>Won</th>
+<th>Drawn</th>
+<th>Lost</th>
+<th>Goals For</th>
+<th>Goals Against</th>
+<th>Goal Difference</th>
+<th>Points</th>
+
+</tr>
+
+{% for team in ladies_teams %}
+
+<tr>
+
+<td>{{ forloop.counter }}</td>
+
+<td>{{ team.name }}</td>
+
+<td>{{ team.played }}</td>
+
+<td>{{ team.won }}</td>
+
+<td>{{ team.drawn }}</td>
+
+<td>{{ team.lost }}</td>
+
+<td>{{ team.goals_for }}</td>
+
+<td>{{ team.goals_against }}</td>
+
+<td>{{ team.goal_difference }}</td>
+
+<td><strong>{{ team.points }}</strong></td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<hr>
+
+<h3>Top Goal Scorers</h3>
+
+<table>
+
+<tr>
+    <th>Position</th>
+    <th>Player</th>
+    <th>Team</th>
+    <th>Goals</th>
+</tr>
+
+{% for player in top_scorers %}
+
+<tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ player.player_name }}</td>
+    <td>{{ player.team }}</td>
+    <td>{{ player.goals }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+<hr>
+
+<h3>Top Playmakers</h3>
+
+<table>
+
+<tr>
+    <th>Position</th>
+    <th>Player</th>
+    <th>Team</th>
+    <th>Assists</th>
+</tr>
+
+{% for player in top_assists %}
+
+<tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ player.player_name }}</td>
+    <td>{{ player.team }}</td>
+    <td>{{ player.assists }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+<hr>
+
+<h3>Best Goalkeepers (Clean Sheets)</h3>
+
+<table>
+
+<tr>
+    <th>Position</th>
+    <th>Goalkeeper</th>
+    <th>Team</th>
+    <th>Clean Sheets</th>
+</tr>
+
+{% for player in clean_sheets %}
+
+<tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ player.player_name }}</td>
+    <td>{{ player.team }}</td>
+    <td>{{ player.clean_sheets }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+<hr>
+
+<h3>League Awards</h3>
+
+<table>
+
+<tr>
+    <th>Season</th>
+    <th>Award</th>
+    <th>Winner</th>
+    <th>Team</th>
+</tr>
+
+{% for award in awards %}
+
+<tr>
+
+<td>{{ award.season }}</td>
+
+<td>{{ award.award_name }}</td>
+
+<td>
+
+{% if award.player %}
+
+{{ award.player.player_name }}
+
+{% elif award.team %}
+
+{{ award.team.name }}
+
+{% else %}
+
+-
+
+{% endif %}
+
+</td>
+
+<td>
+
+{% if award.team %}
+
+{{ award.team.name }}
+
+{% elif award.player %}
+
+{{ award.player.team }}
+
+{% else %}
+
+-
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<hr>
+
+<h3>Finance Summary</h3>
+
+<table>
+
+<tr>
+    <th>Category</th>
+    <th>Team / Player</th>
+    <th>Amount (KES)</th>
+    <th>Date</th>
+    <th>Status</th>
+</tr>
+
+{% for record in finance %}
+
+<tr>
+
+<td>{{ record.category }}</td>
+
+<td>
+
+{% if record.team %}
+{{ record.team.name }}
+
+{% elif record.player %}
+{{ record.player.player_name }}
+
+{% elif record.referee %}
+{{ record.referee }}
+
+{% else %}
+-
+{% endif %}
+
+</td>
+
+<td>{{ record.amount }}</td>
+
+<td>{{ record.transaction_date }}</td>
+
+<td>{{ record.status }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<hr>
+
+<h3>Match Results</h3>
+
+<table>
+
+<tr>
+
+<th>Date</th>
+<th>Home Team</th>
+<th>Score</th>
+<th>Away Team</th>
+<th>Status</th>
+
+</tr>
+
+{% for match in matches %}
+
+<tr>
+
+<td>{{ match.match_date }}</td>
+
+<td>{{ match.home_team }}</td>
+
+<td>
+
+{{ match.home_score }}
+
+-
+
+{{ match.away_score }}
+
+</td>
+
+<td>{{ match.away_team }}</td>
+
+<td>{{ match.status }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<hr>
+
+<div style="text-align:center;margin-top:40px;">
+
+<h3>End of Report</h3>
+
+<p>
+Generated by the <strong>Baraton Soccer League Management System</strong>
+</p>
+
+<p>
+University of Eastern Africa, Baraton
+</p>
+
+<p>
+This report summarizes league standings, player statistics,
+finance records, awards and match results.
+</p>
+
+</div>
+
+</body>
+
+</html>

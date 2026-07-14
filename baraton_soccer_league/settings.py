@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'finance',
     'complaints',
     'awards',
+    'reports',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

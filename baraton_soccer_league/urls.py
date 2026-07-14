@@ -51,6 +51,7 @@ urlpatterns = [
     path('lineups/', include('lineups.urls')),
     path('complaints/', include('complaints.urls')),
     path('awards/', include('awards.urls')),
+    path('reports/', include('reports.urls')),
 
     # Payment Approval
     path(
