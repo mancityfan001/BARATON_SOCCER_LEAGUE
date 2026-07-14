@@ -7,16 +7,33 @@
     <style>
 
         body{
-            font-family:Arial;
-            background:#f4f4f4;
+            font-family:Arial, sans-serif;
             margin:0;
             padding:0;
+            background:linear-gradient(135deg,#eef7ff,#d9ecff,#f5fbff);
         }
 
         header{
-            background:#00bcd4;
-            color:white;
-            padding:20px;
+        background:linear-gradient(135deg,#006400,#00b894);
+        color:white;
+        padding:35px;
+        text-align:center;
+        border-bottom:5px solid gold;
+        }
+
+        header h1{
+            margin:0;
+            font-size:38px;
+        }
+
+        header h3{
+            margin:10px 0;
+            font-weight:normal;
+        }
+
+        header p{
+            margin-top:8px;
+            font-size:18px;
         }
 
         .container{
@@ -29,37 +46,71 @@
             width:100%;
             border-collapse:collapse;
             background:white;
+            border-radius:10px;
+            overflow:hidden;
+            box-shadow:0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom:25px;
         }
 
         th{
-            background:#00bcd4;
+            background:#006400;
             color:white;
-            padding:12px;
+            padding:14px;
+            font-size:16px;
         }
 
         td{
-            padding:10px;
-            border-bottom:1px solid #ddd;
+            padding:12px;
+            border-bottom:1px solid #e5e5e5;
             text-align:center;
         }
+        
+        tr:nth-child(even){
+            background:#f8f8f8;
+        }
 
+        tr:hover{
+            background:#e8f5e9;
+            transition:0.3s;
+        }
+            
         .buttons{
-            margin-bottom:20px;
+            text-align:center;
+            margin:30px 0;
         }
 
         .btn{
             display:inline-block;
-            background:#00bcd4;
+            background:#006400;
             color:white;
-            padding:12px 20px;
+            padding:14px 25px;
             text-decoration:none;
-            margin-right:10px;
+            margin:8px;
+            border-radius:8px;
+            font-weight:bold;
+            transition:.3s;
+        }
+
+        .btn:hover{
+            background:#004d00;
+            transform:translateY(-2px);
         }
 
         .section{
             background:white;
+            padding:25px;
+            margin-top:25px;
+            border-radius:12px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        footer{
+            background:#006400;
+            color:white;
+            text-align:center;
             padding:20px;
-            margin-top:20px;
+            margin-top:40px;
+            font-size:15px;
         }
 
     </style>
@@ -70,7 +121,13 @@
 
 <header>
 
-    <h1>BARATON SOCCER LEAGUE</h1>
+    <h1>⚽ BARATON SOCCER LEAGUE</h1>
+
+    <h3>University of Eastern Africa, Baraton</h3>
+
+    <p>
+        League Management System
+    </p>
 
 </header>
 
@@ -135,7 +192,15 @@
             </tr>
 
             {% for team in men_teams %}
-            <tr>
+            <tr
+            {% if forloop.counter == 1 %}
+            style="background:#FFD700; font-weight:bold;"
+            {% elif forloop.counter == 2 %}
+            style="background:#C0C0C0; font-weight:bold;"
+            {% elif forloop.counter == 3 %}
+            style="background:#CD7F32; color:white; font-weight:bold;"
+            {% endif %}
+            >
                 <td>{{ forloop.counter }}</td>
                 <td>{{ team.name }}</td>
                 <td>{{ team.played }}</td>
@@ -166,7 +231,15 @@
             </tr>
 
             {% for team in ladies_teams %}
-            <tr>
+            <tr
+            {% if forloop.counter == 1 %}
+            style="background:#FFD700; font-weight:bold;"
+            {% elif forloop.counter == 2 %}
+            style="background:#C0C0C0; font-weight:bold;"
+            {% elif forloop.counter == 3 %}
+            style="background:#CD7F32; color:white; font-weight:bold;"
+            {% endif %}
+            >
                 <td>{{ forloop.counter }}</td>
                 <td>{{ team.name }}</td>
                 <td>{{ team.played }}</td>
@@ -236,8 +309,6 @@
 
 </div>
 
-</body>
-</html>
 <div style="display:flex; gap:30px; flex-wrap:wrap;">
     <div class="section" style="flex:1; min-width:450px;">
 
@@ -253,7 +324,11 @@
 
         {% for player in men_top_scorers %}
 
-        <tr>
+        <tr
+        {% if forloop.counter == 1 %}
+        style="background:linear-gradient(135deg,#FFD700,#FFC107); color:#000; font-weight:bold;"
+        {% endif %}
+        >
 
             <td>{{ player.player_name }}</td>
 
@@ -283,7 +358,11 @@
 
         {% for player in ladies_top_scorers %}
 
-        <tr>
+        <tr
+        {% if forloop.counter == 1 %}
+        style="background:linear-gradient(135deg,#FFD700,#FFC107); color:#000; font-weight:bold;"
+        {% endif %}
+        >
 
             <td>{{ player.player_name }}</td>
 
@@ -314,7 +393,11 @@
 
         {% for player in men_top_assists %}
 
-        <tr>
+        <tr
+        {% if forloop.counter == 1 %}
+        style="background:linear-gradient(135deg,#FFD700,#FFC107); color:#000; font-weight:bold;"
+        {% endif %}
+        >
 
             <td>{{ player.player_name }}</td>
 
@@ -343,7 +426,11 @@
 
         {% for player in ladies_top_assists %}
 
-        <tr>
+        <tr
+        {% if forloop.counter == 1 %}
+        style="background:linear-gradient(135deg,#FFD700,#FFC107); color:#000; font-weight:bold;"
+        {% endif %}
+        >
 
             <td>{{ player.player_name }}</td>
 
@@ -374,7 +461,11 @@
 
         {% for player in men_clean_sheets %}
 
-        <tr>
+        <tr
+        {% if forloop.counter == 1 %}
+        style="background:linear-gradient(135deg,#FFD700,#FFC107); color:#000; font-weight:bold;"
+        {% endif %}
+        >
 
             <td>{{ player.player_name }}</td>
 
@@ -407,7 +498,11 @@
 
         {% for player in ladies_clean_sheets %}
 
-        <tr>
+        <tr
+        {% if forloop.counter == 1 %}
+        style="background:linear-gradient(135deg,#FFD700,#FFC107); color:#000; font-weight:bold;"
+        {% endif %}
+        >
 
             <td>{{ player.player_name }}</td>
 
@@ -565,3 +660,12 @@
     </div>
 
 </div>
+
+<footer style="background:#00bcd4;color:white;text-align:center;padding:20px;margin-top:40px;">
+    <p><strong>Baraton Soccer League Management System</strong></p>
+    <p>Developed by Whitney Janet | Software Engineering Project</p>
+    <p>&copy; 2026 All Rights Reserved</p>
+</footer>
+
+</body>
+</html>
