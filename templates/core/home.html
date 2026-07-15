@@ -543,48 +543,56 @@
 
             <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px;">
 
-                <div style="background:#FFD700;border-radius:15px;padding:20px;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2);">
+                <div style="background:#FFD700;border-radius:15px;padding:20px;height:280px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2);">
                     <h1>🥇</h1>
                     <h3>Golden Boot</h3>
 
                     {% if men_top_scorers %}
-                        <h2>{{ men_top_scorers.0.player_name }}</h2>
+                        <h2 style="height:70px;display:flex;align-items:center;justify-content:center;">
+                            {{ men_top_scorers.0.player_name }}
+                        </h2>
                         <p>{{ men_top_scorers.0.goals }} Goals</p>
                     {% else %}
                         <p>No winner</p>
                     {% endif %}
                 </div>
 
-                <div style="background:#87CEEB;border-radius:15px;padding:20px;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2);">
+                <div style="background:#87CEEB;border-radius:15px;padding:20px;height:280px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2);">
                     <h1>🎯</h1>
                     <h3>Top Playmaker</h3>
 
                     {% if men_top_assists %}
-                        <h2>{{ men_top_assists.0.player_name }}</h2>
+                        <h2 style="height:70px;display:flex;align-items:center;justify-content:center;">
+                            {{ men_top_assists.0.player_name }}
+                        </h2>
                         <p>{{ men_top_assists.0.assists }} Assists</p>
                     {% else %}
                         <p>No winner</p>
                     {% endif %}
                 </div>
 
-                <div style="background:#90EE90;border-radius:15px;padding:20px;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2);">
+                <div style="background:#90EE90;border-radius:15px;padding:20px;height:280px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2);">
                     <h1>🧤</h1>
                     <h3>Golden Glove</h3>
 
                     {% if men_clean_sheets %}
-                        <h2>{{ men_clean_sheets.0.player_name }}</h2>
+                        <h2 style="height:70px;display:flex;align-items:center;justify-content:center;">
+                            {{ men_clean_sheets.0.player_name }}
+                        </h2>
                         <p>{{ men_clean_sheets.0.clean_sheets }} Clean Sheets</p>
                     {% else %}
                         <p>No winner</p>
                     {% endif %}
                 </div>
 
-                <div style="background:#FFE066;border-radius:15px;padding:20px;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2);">
+                <div style="background:#FFE066;border-radius:15px;padding:20px;height:280px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2);">
                     <h1>🏆</h1>
                     <h3>League Champion</h3>
 
                     {% if men_teams %}
-                        <h2>{{ men_teams.0.name }}</h2>
+                        <h2 style="height:70px;display:flex;align-items:center;justify-content:center;">
+                            {{ men_teams.0.name }}
+                        </h2>
                         <p>{{ men_teams.0.points }} Points</p>
                     {% else %}
                         <p>No Champion</p>
@@ -605,48 +613,56 @@
 
             <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px;">
 
-                <div style="background:#FFD700;border-radius:15px;padding:20px;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2);">
+                <div style="background:#FFD700;border-radius:15px;padding:20px;height:280px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2);">
                     <h1>🥇</h1>
                     <h3>Golden Boot</h3>
 
                     {% if ladies_top_scorers %}
-                        <h2>{{ ladies_top_scorers.0.player_name }}</h2>
+                        <h2 style="height:70px;display:flex;align-items:center;justify-content:center;">
+                            {{ ladies_top_scorers.0.player_name }}
+                        </h2>
                         <p>{{ ladies_top_scorers.0.goals }} Goals</p>
                     {% else %}
                         <p>No winner</p>
                     {% endif %}
                 </div>
 
-                <div style="background:#FFB6C1;border-radius:15px;padding:20px;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2);">
+                <div style="background:#FFB6C1;border-radius:15px;padding:20px;height:280px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2);">
                     <h1>🎯</h1>
                     <h3>Top Playmaker</h3>
 
                     {% if ladies_top_assists %}
-                        <h2>{{ ladies_top_assists.0.player_name }}</h2>
+                        <h2 style="height:70px;display:flex;align-items:center;justify-content:center;">
+                            {{ ladies_top_assists.0.player_name }}
+                        </h2>
                         <p>{{ ladies_top_assists.0.assists }} Assists</p>
                     {% else %}
                         <p>No winner</p>
                     {% endif %}
                 </div>
 
-                <div style="background:#98FB98;border-radius:15px;padding:20px;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2);">
+                <div style="background:#98FB98;border-radius:15px;padding:20px;height:280px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2);">
                     <h1>🧤</h1>
                     <h3>Golden Glove</h3>
 
                     {% if ladies_clean_sheets %}
-                        <h2>{{ ladies_clean_sheets.0.player_name }}</h2>
+                        <h2 style="height:70px;display:flex;align-items:center;justify-content:center;">
+                            {{ ladies_clean_sheets.0.player_name }}
+                        </h2>
                         <p>{{ ladies_clean_sheets.0.clean_sheets }} Clean Sheets</p>
                     {% else %}
                         <p>No winner</p>
                     {% endif %}
                 </div>
 
-                <div style="background:#FFF176;border-radius:15px;padding:20px;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2);">
+                <div style="background:#FFF176;border-radius:15px;padding:20px;height:280px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2);">
                     <h1>🏆</h1>
                     <h3>League Champion</h3>
 
                     {% if ladies_teams %}
-                        <h2>{{ ladies_teams.0.name }}</h2>
+                        <h2 style="height:70px;display:flex;align-items:center;justify-content:center;">
+                            {{ ladies_teams.0.name }}
+                        </h2>
                         <p>{{ ladies_teams.0.points }} Points</p>
                     {% else %}
                         <p>No Champion</p>

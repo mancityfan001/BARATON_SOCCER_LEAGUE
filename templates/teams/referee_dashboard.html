@@ -40,17 +40,62 @@
             border-radius:5px;
         }
 
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        th, td{
+            border:1px solid #ddd;
+            padding:12px;
+            text-align:center;
+        }
+
+        th{
+            background:#11c5d9;
+            color:white;
+        }
+
+        tr:nth-child(even){
+            background:#f8f9fa;
+        }
+
     </style>
 
 </head>
 
 <body>
 
+<div style="
+background:linear-gradient(135deg, #006400, #0b5ed7);
+color:white;
+padding:18px 35px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 3px 10px rgba(0,0,0,.2);
+">
+
+    <h2 style="margin:0;font-size:32px;font-weight:bold;">
+        ⚽ Referee Dashboard
+    </h2>
+
+    <a href="/logout/"
+       style="
+       background:#dc3545;
+       color:white;
+       padding:10px 20px;
+       text-decoration:none;
+       border-radius:8px;
+       font-weight:bold;">
+        Logout
+    </a>
+
+</div>
+
 <div class="container">
 
     <div class="card">
-
-        <h1>Referee Dashboard</h1>
 
         {% if messages %}
             {% for message in messages %}
