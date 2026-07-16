@@ -18,6 +18,7 @@ from .models import Team
 from notifications.models import AdminNotification
 from players.models import Card
 from django.contrib import messages
+from django.db.models import Q
 
 # HOME PAGE
 def home(request):
@@ -454,9 +455,11 @@ def referee_dashboard(request):
     ).order_by('-created_at')
 
     games_officiated = Match.objects.filter(
-        center_referee=request.user ,
+        Q(center_referee=request.user) |
+        Q(assistant_referee_one=request.user) |
+        Q(assistant_referee_two=request.user),
         status="Completed"
-    ).count()
+    ).distinct().count()
 
     context = {
         'assigned_matches': assigned_matches,
@@ -541,47 +544,7 @@ def submit_match_report(request):
         if MatchReport.objects.filter(match=match).exists():
             messages.error(request, "This match has already been reported.")
             return redirect("referee_dashboard")
-
-        home_team = match.home_team
-        away_team = match.away_team
-
-        home_team.played += 1
-        away_team.played += 1
-
-        home_team.goals_scored += home_score
-        home_team.goals_conceded += away_score
-
-        away_team.goals_scored += away_score
-        away_team.goals_conceded += home_score
-
-        if home_score > away_score:
-            home_team.wins += 1
-            away_team.losses += 1
-            home_team.points += 3
-
-        elif home_score < away_score:
-            away_team.wins += 1
-            home_team.losses += 1
-            away_team.points += 3
-
-        else:
-            home_team.draws += 1
-            away_team.draws += 1
-            home_team.points += 1
-            away_team.points += 1
-
-        home_team.goal_difference = (
-            home_team.goals_scored -
-            home_team.goals_conceded
-        )
-
-        away_team.goal_difference = (
-            away_team.goals_scored -
-            away_team.goals_conceded
-        )
-
-        home_team.save()
-        away_team.save()
+       
 
         # ================= END LEAGUE TABLE =================
 
