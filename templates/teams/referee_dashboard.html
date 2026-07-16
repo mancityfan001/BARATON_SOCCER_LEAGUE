@@ -76,9 +76,10 @@ align-items:center;
 box-shadow:0 3px 10px rgba(0,0,0,.2);
 ">
 
-    <h2 style="margin:0;font-size:32px;font-weight:bold;">
-        ⚽ Referee Dashboard
-    </h2>
+    <h2>⚽ Welcome, Referee {{ request.user.first_name }}</h2>
+    <p style="margin:6px 0 0 0;color:#e8e8e8;font-size:16px;">
+        Official Match Dashboard
+    </p>
 
     <a href="/logout/"
        style="
@@ -112,6 +113,7 @@ box-shadow:0 3px 10px rgba(0,0,0,.2);
             {% endfor %}
         {% endif %}
 
+        <p><strong>👤 Referee:</strong> {{ request.user.first_name }}</p>
         <h3>Total Games Officiated</h3>
         <p>{{ games_officiated }}</p>
 
