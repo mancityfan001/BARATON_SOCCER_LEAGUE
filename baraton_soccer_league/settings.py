@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-93gqj(j6c-v023x8&q&h&3h-!&zkvln1p-7^nyr4u^v8#yxlv#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['baraton-soccer-league.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['baraton-soccer-league.onrender.com']
 
 
 # Application definition
