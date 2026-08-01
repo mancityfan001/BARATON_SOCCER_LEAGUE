@@ -208,3 +208,21 @@ label,
 p.help {
     color: #555 !important;
 }
+
+/* Make Django admin table data visible on dark rows */
+#result_list tbody td,
+#result_list tbody th {
+    color: #ffffff !important;
+}
+
+/* Keep match links visible */
+#result_list tbody th a,
+#result_list tbody td a {
+    color: #39b779 !important;
+}
+
+/* Table headings */
+#result_list thead th,
+#result_list thead th a {
+    color: #174b35 !important;
+}
