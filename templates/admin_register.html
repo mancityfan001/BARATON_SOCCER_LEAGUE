@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Sign Up | Baraton Soccer League</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .register-container {
+            width: 90%;
+            max-width: 500px;
+            background: #181818;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            background: #27bcd1;
+            padding: 22px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        .header p {
+            margin: 8px 0 0;
+        }
+
+        .form-area {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background: #111;
+            color: white;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #27bcd1;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 5px;
+            background: #27bcd1;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #20a7ba;
+        }
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 12px;
+            background: #333;
+            border-left: 4px solid #27bcd1;
+            margin-bottom: 8px;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .login-link a {
+            color: #27bcd1;
+        }
+
+        .notice {
+            font-size: 14px;
+            color: #ccc;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="register-container">
+
+    <div class="header">
+        <h1>Baraton Soccer League Admin</h1>
+        <p>Create Administrator Account</p>
+    </div>
+
+    <div class="form-area">
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <p class="notice">
+            After creating your account, you must wait for approval
+            from the superuser before accessing the administration panel.
+        </p>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="phone_number">Phone Number</label>
+                <input
+                    type="text"
+                    id="phone_number"
+                    name="phone_number"
+                    placeholder="Enter phone number"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password1">Password</label>
+                <input
+                    type="password"
+                    id="password1"
+                    name="password1"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password2">Confirm Password</label>
+                <input
+                    type="password"
+                    id="password2"
+                    name="password2"
+                    required
+                >
+            </div>
+
+            <button type="submit">
+                Create Account
+            </button>
+        </form>
+
+        <div class="login-link">
+            Already approved?
+            <a href="/admin/">Admin Login</a>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

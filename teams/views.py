@@ -19,6 +19,7 @@ from notifications.models import AdminNotification
 from players.models import Card
 from django.contrib import messages
 from django.db.models import Q
+from users.models import CustomUser
 
 # HOME PAGE
 def home(request):
@@ -813,3 +814,49 @@ def transfer_payment(request, transfer_id):
         'teams/transfer_payment.html',
         {'transfer': transfer}
     )
+
+def admin_register(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        phone_number = request.POST.get("phone_number")
+        password1 = request.POST.get("password1")
+        password2 = request.POST.get("password2")
+
+        # Check that all required fields were entered
+        if not username or not password1 or not password2:
+            messages.error(request, "Please fill in all required fields.")
+            return render(request, "admin_register.html")
+
+        # Check passwords match
+        if password1 != password2:
+            messages.error(request, "Passwords do not match.")
+            return render(request, "admin_register.html")
+
+        # Check username isn't already taken
+        if CustomUser.objects.filter(username=username).exists():
+            messages.error(request, "That username already exists.")
+            return render(request, "admin_register.html")
+
+        # Create the account, but DO NOT give admin access yet
+        user = CustomUser.objects.create_user(
+            username=username,
+            email=email,
+            phone_number=phone_number,
+            password=password1,
+            role="admin",
+        )
+
+        user.admin_approved = False
+        user.is_staff = False
+        user.is_superuser = False
+        user.save()
+
+        messages.success(
+            request,
+            "Account created successfully. Please wait for approval by the superuser."
+        )
+
+        return redirect("/admin/")
+
+    return render(request, "admin_register.html")

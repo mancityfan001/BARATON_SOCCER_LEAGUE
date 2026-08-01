@@ -1,0 +1,210 @@
+/* BARATON SOCCER LEAGUE - DJANGO ADMIN */
+
+/* Main colours */
+:root {
+    --primary: #006400;
+    --secondary: #0b7a3e;
+    --accent: #f4c430;
+    --header-color: #ffffff;
+    --link-fg: #08783f;
+    --link-hover-color: #00552d;
+    --button-bg: #08783f;
+    --button-hover-bg: #00552d;
+}
+
+/* Page background */
+body {
+    background: #f4f7f5;
+}
+
+/* Top header */
+#header {
+    background: linear-gradient(135deg, #004d2c, #08783f);
+    color: white;
+    padding: 14px 25px;
+}
+
+/* League title */
+#site-name a {
+    color: white !important;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+/* Breadcrumb navigation */
+div.breadcrumbs {
+    background: #0b7a3e;
+    color: white;
+}
+
+div.breadcrumbs a {
+    color: white;
+}
+
+/* Dashboard modules */
+.module {
+    background: white;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+}
+
+/* Module headings */
+.module h2,
+.module caption,
+.inline-group h2 {
+    background: linear-gradient(135deg, #006400, #0b7a3e);
+    color: white;
+    padding: 12px 15px;
+}
+
+/* Dashboard links */
+.module a {
+    font-weight: 500;
+}
+
+/* Tables */
+#result_list {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#result_list thead th {
+    background: #e8f3ed;
+    color: #173b29;
+}
+
+/* Main buttons */
+.button,
+input[type="submit"],
+input[type="button"],
+.submit-row input,
+a.button {
+    background: #08783f;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    color: white;
+}
+
+.button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+.submit-row input:hover,
+a.button:hover {
+    background: #00552d;
+}
+
+/* Save button */
+.submit-row input.default {
+    background: #006400;
+}
+
+/* Delete buttons */
+.delete-button,
+.deletelink {
+    border-radius: 6px !important;
+}
+
+/* Form fields */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="url"],
+textarea,
+select {
+    border: 1px solid #ccd8d0;
+    border-radius: 6px;
+    padding: 9px;
+}
+
+/* Focus effect */
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: #08783f;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(8, 120, 63, 0.12);
+}
+
+/* Admin content */
+#content {
+    padding: 25px;
+}
+
+/* Recent actions area */
+#content-related {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Messages */
+.messagelist li.success {
+    border-radius: 6px;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+    #content {
+        padding: 15px;
+    }
+}
+
+/* FIX ADMIN TEXT VISIBILITY */
+
+body,
+#content,
+#content-main,
+.dashboard,
+.form-row,
+fieldset,
+.module {
+    color: #222 !important;
+}
+
+/* Form labels */
+label,
+.required label,
+.aligned label {
+    color: #222 !important;
+}
+
+/* Login page headings and text */
+.login #content,
+.login #content-main,
+.login .form-row,
+.login label {
+    color: #222 !important;
+}
+
+/* Login inputs */
+.login input[type="text"],
+.login input[type="password"],
+.login input[type="email"] {
+    background: #ffffff !important;
+    color: #222 !important;
+    border: 1px solid #aaa !important;
+}
+
+/* Normal links */
+#content a {
+    color: #006b3c;
+}
+
+/* Keep module header text white */
+.module h2,
+.module caption,
+.inline-group h2 {
+    color: #ffffff !important;
+}
+
+/* Help text */
+.help,
+.helptext,
+p.help {
+    color: #555 !important;
+}

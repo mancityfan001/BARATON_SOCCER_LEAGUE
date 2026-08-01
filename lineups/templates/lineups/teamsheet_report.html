@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Sheet - {{ teamsheet.team_name }}</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 30px;
+            color: #222;
+        }
+
+        .team-sheet {
+            max-width: 850px;
+            margin: auto;
+            background: white;
+            padding: 35px;
+            border: 1px solid #ddd;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #087443;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #087443;
+        }
+
+        .header h2 {
+            margin: 8px 0 0;
+        }
+
+        .match-info {
+            margin-bottom: 25px;
+        }
+
+        .match-info p {
+            margin: 8px 0;
+        }
+
+        .section-title {
+            background: #087443;
+            color: white;
+            padding: 10px;
+            margin-top: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #eeeeee;
+        }
+
+        .print-button {
+            display: block;
+            width: 180px;
+            margin: 30px auto 0;
+            padding: 12px;
+            background: #087443;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .team-sheet {
+                border: none;
+            }
+
+            .print-button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="team-sheet">
+
+    <div class="header">
+        <h1>BARATON SOCCER LEAGUE</h1>
+        <h2>OFFICIAL TEAM SHEET</h2>
+    </div>
+
+    <div class="match-info">
+        <p>
+            <strong>Fixture:</strong>
+            {{ teamsheet.fixture.home_team }}
+            vs
+            {{ teamsheet.fixture.away_team }}
+        </p>
+
+        <p><strong>Team:</strong> {{ teamsheet.team_name }}</p>
+
+        <p><strong>Coach:</strong> {{ teamsheet.coach_name }}</p>
+
+        <p><strong>Captain:</strong> {{ teamsheet.captain_name }}</p>
+
+        <p><strong>Submitted:</strong> {{ teamsheet.submitted_at }}</p>
+    </div>
+
+
+    <h3 class="section-title">Starting XI</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Player Name</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for player in first_eleven %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ player }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <h3 class="section-title">Substitutes</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Player Name</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for player in substitutes %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ player }}</td>
+            </tr>
+
+            {% empty %}
+            <tr>
+                <td colspan="2">No substitutes listed.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <button class="print-button" onclick="window.print()">
+        Print Team Sheet
+    </button>
+
+</div>
+
+</body>
+</html>

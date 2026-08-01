@@ -9,5 +9,10 @@ urlpatterns = [
         name='submit_teamsheet'
     ),
 
-   
+    path(
+        'report/<int:teamsheet_id>/',
+        views.teamsheet_report,
+        name='teamsheet_report'
+    )
+
 ]

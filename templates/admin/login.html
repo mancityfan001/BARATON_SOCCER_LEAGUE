@@ -1,0 +1,71 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block bodyclass %}login{% endblock %}
+
+{% block nav-breadcrumbs %}{% endblock %}
+
+{% block content %}
+
+{% if form.errors %}
+<p class="errornote">
+    Please enter the correct username and password.
+</p>
+{% endif %}
+
+<div id="content-main">
+
+    <form action="{{ app_path }}" method="post" id="login-form">
+        {% csrf_token %}
+
+        <div class="form-row">
+            {{ form.username.errors }}
+            {{ form.username.label_tag }}
+            {{ form.username }}
+        </div>
+
+        <div class="form-row">
+            {{ form.password.errors }}
+            {{ form.password.label_tag }}
+            {{ form.password }}
+
+            <input type="hidden" name="next" value="{{ next }}">
+        </div>
+
+        <div class="submit-row">
+            <input type="submit" value="Log in">
+        </div>
+
+        <div style="text-align: center; margin-top: 12px;">
+            <a href="{% url 'password_reset' %}">
+                Forgot Password?
+            </a>
+        </div>
+
+    </form>
+
+    <hr style="margin: 25px 0;">
+
+    <div style="text-align: center;">
+        <p><strong>Don't have an administrator account?</strong></p>
+
+        <a href="{% url 'admin_register' %}"
+           style="
+               display: inline-block;
+               padding: 10px 18px;
+               background: #417690;
+               color: white;
+               text-decoration: none;
+               border-radius: 4px;
+           ">
+            Create Admin Account
+        </a>
+
+        <p style="margin-top: 12px; font-size: 12px;">
+            New administrator accounts require superuser approval.
+        </p>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import TeamSheet
 from matches.models import Match
+from django.shortcuts import get_object_or_404
 
 
 def submit_teamsheet(request):
@@ -53,5 +54,20 @@ def submit_teamsheet(request):
         'lineups/submit_teamsheet.html',
         {'matches': matches}
     )
-def __str__(self):
-    return f"{self.team_name} - {self.fixture.home_team} vs {self.fixture.away_team}"
+
+def teamsheet_report(request, teamsheet_id):
+    teamsheet = get_object_or_404(TeamSheet, id=teamsheet_id)
+
+    first_eleven = teamsheet.first_eleven.splitlines()
+
+    substitutes = (
+    teamsheet.substitutes.splitlines() 
+    if teamsheet.substitutes
+    else []
+    )
+    context = {
+        'teamsheet': teamsheet,
+        'first_eleven': first_eleven,
+        'substitutes': substitutes
+    }
+    return render(request, 'lineups/teamsheet_report.html', context)

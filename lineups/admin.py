@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import TeamSheet
-
+from django.utils.html import format_html
 
 @admin.register(TeamSheet)
 class TeamSheetAdmin(admin.ModelAdmin):
@@ -10,7 +10,8 @@ class TeamSheetAdmin(admin.ModelAdmin):
         'coach_name',
         'captain_name',
         'fixture',
-        'approved'
+        'approved',
+        'print_teamsheet'
     )
 
     list_filter = (
@@ -29,3 +30,10 @@ class TeamSheetAdmin(admin.ModelAdmin):
         queryset.update(approved=True)
 
     approve_teamsheets.short_description = "Approve selected team sheets"
+
+    def print_teamsheet(self, obj):
+        return format_html(
+            '<a href="/lineups/report/{}/" target="_blank">view / Print</a>',
+            obj.id
+        )
+    print_teamsheet.short_description = "Print Team Sheet"
