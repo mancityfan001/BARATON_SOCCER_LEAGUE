@@ -87,6 +87,28 @@ class FinanceRecord(models.Model):
     blank=True
     )
 
+    payment_method = models.CharField(
+    max_length=30,
+    default='Simulated M-Pesa'
+    )
+
+    phone_number = models.CharField(
+      max_length=15,
+        blank=True
+    )
+
+    payment_reference = models.CharField(
+    max_length=100,
+    blank=True,
+    unique=True,
+    null=True
+    )
+
+    payment_message = models.TextField(
+        max_length=255,
+        blank=True
+    )  
+
     payment_proof = models.ImageField(
     upload_to='payment_proofs/',
     null=True,

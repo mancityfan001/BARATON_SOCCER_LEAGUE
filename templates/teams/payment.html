@@ -1,3 +1,76 @@
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f5;
+        margin: 0;
+        padding: 0;
+    }
+
+    .payment-container {
+        max-width: 550px;
+        margin: 50px auto;
+        background: white;
+        padding: 35px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+    }
+
+    .payment-container h2 {
+        text-align: center;
+        color: #087f45;
+        margin-bottom: 8px;
+    }
+
+    .payment-container p {
+        text-align: center;
+        color: #666;
+        margin-bottom: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 7px;
+        color: #333;
+    }
+
+    input,
+    select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-sizing: border-box;
+        font-size: 15px;
+    }
+
+    input:focus,
+    select:focus {
+        outline: none;
+        border-color: #087f45;
+    }
+
+    .pay-button {
+        width: 100%;
+        padding: 13px;
+        background: #087f45;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .pay-button:hover {
+        background: #066b3a;
+    }
+</style>
+
 {% if messages %}
 
     {% for message in messages %}
@@ -13,7 +86,10 @@
     {% endfor %}
 
 {% endif %}
-<form method="POST" enctype="multipart/form-data">
+<div class="payment-container">
+    <h2>Team Registration Payment</h2>
+    <p>Complete the payment details below to register your team.</p>
+<form method="POST">
     {% csrf_token %}
 
     <label>Select Team</label>
@@ -28,14 +104,31 @@
     <label>Amount Paid</label>
     <input type="number" name="amount_paid" required>
 
-    <label>Mpesa Code</label>
-    <input type="text" name="mpesa_code" required>
-
-    <label>Payment Proof</label>
-    <input type="file" name="payment_proof">
+    <label>Phone Number</label>
+    <input
+        type="tel"
+        name="phone_number"
+        placeholder="e.g. 0712345678"
+        required
+    >
 
     <button type="submit">
         Submit Payment
     </button>
 
 </form>
+
+<p>
+    After completing the M-Pesa prompt on your phone,
+    your payment status will be verified by M-Pesa.
+</p>
+
+</div>
+{% if request.GET.payment_id %}
+<script>
+    setTimeout(function () {
+        window.location.href =
+            "{% url 'check_team_payment_status' request.GET.payment_id %}";
+    }, 5000);
+</script>
+{% endif %}

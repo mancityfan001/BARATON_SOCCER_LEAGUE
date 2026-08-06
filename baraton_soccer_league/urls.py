@@ -93,6 +93,18 @@ urlpatterns = [
     ),
 
     path(
+        'team-payment/check/<int:payment_id>/',
+        views.check_team_payment_status,
+        name='check_team_payment_status'
+    ),
+
+    path(
+        'mpesa/callback/',
+        views.mpesa_callback,
+        name='mpesa_callback'
+    ),
+
+    path(
         'password-reset/',
         auth_views.PasswordResetView.as_view(
             template_name='registration/password_reset_form.html'

@@ -61,7 +61,7 @@
 
     {% if success %}
         <div class="success">
-            Transfer request submitted successfully.
+            Transfer request submitted successfully. Waiting for the other coach to approve.
         </div>
     {% endif %}
 
@@ -97,12 +97,12 @@
         </select>
 
         <label>Transfer Fee</label>
-        <input type="number" name="transfer_fee" step="0.01">
-       
+<input type="number" name="transfer_fee" step="0.01" required>
 
-        <button type="submit">
-            Submit Transfer
-        </button>
+
+<button type="submit">
+    Submit Transfer Request
+</button>
 
     </form>
 

@@ -28,7 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    'baraton-soccer-league.onrender.com'
+    'baraton-soccer-league.onrender.com',
+    'mutation-jubilance-oxidize.ngrok-free.dev',
 ]
 
 
@@ -153,3 +154,10 @@ EMAIL_HOST_USER = 'obalawhitney@gmail.com'
 EMAIL_HOST_PASSWORD = 'gsyagppkvusqtgap'
 
 DEFAULT_FROM_EMAIL = 'Baraton Premier League <obalawhitney@gmail.com>'
+
+MPESA_CONSUMER_KEY = 'xyXpjQKuYCS7CtUevAfrcgjMqG9xTqj87UKbEVUQEwAjXHGj'
+MPESA_CONSUMER_SECRET = 'yEl59Q2xOvMoTOYepjRZdj9fCfDwHASlPH47y8VMpsryzx4DyK98sh4t6BY4pKX2'
+MPESA_SHORTCODE = '174379'
+MPESA_PASSKEY = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'
+MPESA_SIMULATION = True
+MPESA_CALLBACK_URL = 'https://mutation-jubilance-oxidize.ngrok-free.dev/mpesa/callback/'

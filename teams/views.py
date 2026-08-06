@@ -1,4 +1,5 @@
 from urllib import request
+import uuid
 from django.shortcuts import redirect
 from django.shortcuts import render
 from teams.models import Team
@@ -20,6 +21,279 @@ from players.models import Card
 from django.contrib import messages
 from django.db.models import Q
 from users.models import CustomUser
+import base64
+from datetime import datetime
+import requests
+from django.conf import settings
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.urls import reverse
+
+def format_mpesa_phone(phone_number):
+    phone_number = phone_number.strip().replace(" ", "")
+
+    if phone_number.startswith("0"):
+        phone_number = "254" + phone_number[1:]
+    elif phone_number.startswith("+254"):
+        phone_number = phone_number[1:]
+
+    return phone_number
+
+def get_mpesa_access_token():
+    url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+
+    response = requests.get(
+        url,
+        auth=(
+            settings.MPESA_CONSUMER_KEY,
+            settings.MPESA_CONSUMER_SECRET
+        )
+    )
+
+    response.raise_for_status()
+    return response.json()["access_token"]
+
+def initiate_stk_push(phone_number, amount, description="Player Transfer Fee"):
+    access_token = get_mpesa_access_token()
+
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+
+    password_string = (
+        settings.MPESA_SHORTCODE
+        + settings.MPESA_PASSKEY
+        + timestamp
+    )
+
+    password = base64.b64encode(
+        password_string.encode()
+    ).decode()
+
+    url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+    }
+
+    payload = {
+        "BusinessShortCode": settings.MPESA_SHORTCODE,
+        "Password": password,
+        "Timestamp": timestamp,
+        "TransactionType": "CustomerPayBillOnline",
+        "Amount": int(amount),
+        "PartyA": phone_number,
+        "PartyB": settings.MPESA_SHORTCODE,
+        "PhoneNumber": phone_number,
+        "CallBackURL": settings.MPESA_CALLBACK_URL,
+        "AccountReference": "BaratonSoccerLeague",
+        "TransactionDesc": description,
+    }
+
+    print("SHORTCODE:", settings.MPESA_SHORTCODE)
+    print("CALLBACK URL:", settings.MPESA_CALLBACK_URL)
+    print("PAYLOAD:", payload)
+
+    response = requests.post(
+        url,
+        json=payload,
+        headers=headers,
+    )
+
+    print("M-PESA STATUS CODE:", response.status_code)
+    print("M-PESA RESPONSE:", response.text)
+    print("M-PESA PAYLOAD:", payload)
+
+    response.raise_for_status()
+    return response.json()
+
+def query_stk_status(checkout_request_id):
+    access_token = get_mpesa_access_token()
+
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+
+    password_string = (
+        settings.MPESA_SHORTCODE
+        + settings.MPESA_PASSKEY
+        + timestamp
+    )
+
+    password = base64.b64encode(
+        password_string.encode()
+    ).decode()
+
+    url = "https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query"
+
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+    }
+
+    payload = {
+        "BusinessShortCode": settings.MPESA_SHORTCODE,
+        "Password": password,
+        "Timestamp": timestamp,
+        "CheckoutRequestID": checkout_request_id,
+    }
+
+    print("QUERYING STK STATUS:", checkout_request_id)
+
+    response = requests.post(
+        url,
+        json=payload,
+        headers=headers,
+    )
+
+    print("STK QUERY STATUS CODE:", response.status_code)
+    print("STK QUERY RESPONSE:", response.text)
+
+    response.raise_for_status()
+
+    return response.json()
+
+@csrf_exempt
+def mpesa_callback(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+
+            print("M-PESA CALLBACK:")
+            print(data)
+
+            # Get STK callback information
+            stk_callback = data["Body"]["stkCallback"]
+
+            checkout_request_id = stk_callback["CheckoutRequestID"]
+            result_code = stk_callback["ResultCode"]
+            result_desc = stk_callback["ResultDesc"]
+
+            print("CHECKOUT REQUEST ID:", checkout_request_id)
+            print("RESULT CODE:", result_code)
+            print("RESULT DESCRIPTION:", result_desc)
+
+                        # Check whether this callback belongs to a team registration payment
+            team_payment = TeamPayment.objects.filter(
+                mpesa_code=checkout_request_id
+            ).first()
+
+            if team_payment:
+
+                if result_code == 0:
+                    team_payment.payment_status = 'Approved'
+                    team_payment.save()
+
+                    FinanceRecord.objects.filter(
+                        team=team_payment.team,
+                        category='Team Registration',
+                        status='Pending'
+                    ).update(
+                        status='Approved',
+                        approved=True,
+                        payment_message='M-Pesa payment confirmed successfully'
+                    )
+
+                    AdminNotification.objects.create(
+                        title="Team Registration Payment Confirmed",
+                        message=f"{team_payment.team.name} registration payment has been confirmed by M-Pesa."
+                    )
+
+                    print("TEAM REGISTRATION PAYMENT APPROVED")
+
+                else:
+                    team_payment.payment_status = 'Failed'
+                    team_payment.save()
+
+                    FinanceRecord.objects.filter(
+                        payment_reference=checkout_request_id
+                    ).update(
+                        status='Failed',
+                        approved=False,
+                        payment_message=result_desc
+                    )
+
+                    print("TEAM REGISTRATION PAYMENT FAILED:", result_desc)
+
+                    # Check whether this callback belongs to a transfer payment
+            transfer_payment = TransferPayment.objects.filter(
+                checkout_request_id=checkout_request_id
+            ).first()
+
+            if transfer_payment:
+
+                if result_code == 0:
+                    transfer_payment.status = 'Approved'
+                    transfer_payment.save()
+
+                    transfer = transfer_payment.transfer
+                    transfer.status = 'Completed'
+                    transfer.save()
+
+                    # Move the player to the new team
+                    player = transfer.player
+                    player.team = transfer.to_team
+                    player.save()
+
+                    print(
+                        "PLAYER TRANSFERRED:",
+                        player.player_name,
+                        "TO:",
+                        transfer.to_team.name
+                    )
+
+                    FinanceRecord.objects.filter(
+                        transfer=transfer,
+                        payment_reference=checkout_request_id
+                    ).update(
+                        status='Approved',
+                        approved=True,
+                        payment_message='M-Pesa transfer payment confirmed successfully'
+                    )
+
+                    Notification.objects.create(
+                        user=transfer.to_team.coach,
+                        message=(
+                            f"Transfer payment confirmed for "
+                            f"{transfer.player.player_name}."
+                        )
+                    )
+
+                    print("TRANSFER PAYMENT APPROVED")
+
+                else:
+                    transfer_payment.status = 'Failed'
+                    transfer_payment.save()
+
+                    FinanceRecord.objects.filter(
+                        transfer=transfer_payment.transfer,
+                        payment_reference=checkout_request_id
+                    ).update(
+                        status='Failed',
+                        approved=False,
+                        payment_message=result_desc
+                    )
+
+                    print(
+                        "TRANSFER PAYMENT FAILED:",
+                        result_desc
+                    )
+
+            return JsonResponse({
+                "ResultCode": 0,
+                "ResultDesc": "Callback received successfully"
+            })
+
+        except Exception as e:
+            print("M-PESA CALLBACK ERROR:", e)
+
+            return JsonResponse(
+                {"error": str(e)},
+                status=400
+            )
+
+    return JsonResponse(
+        {"error": "Only POST requests are allowed"},
+        status=405
+    )
 
 # HOME PAGE
 def home(request):
@@ -175,13 +449,18 @@ def coach_dashboard(request):
     print("CURRENT USER:", request.user)
     print("MY COMPLAINTS:", my_complaints)
 
+    finance_records = FinanceRecord.objects.filter(
+        coach=request.user
+    ).order_by('-transaction_date')
+
     context = {
         'players': players,
         'team': team,
         'pending_transfers': pending_transfers,
         'approved_transfers': approved_transfers,
         'unread_count': unread_count,
-        'my_complaints': my_complaints
+        'my_complaints': my_complaints,
+        'finance_records': finance_records
     }
 
     return render(
@@ -250,9 +529,6 @@ def request_transfer(request):
         from_team_id = request.POST.get('from_team')
         to_team_id = request.POST.get('to_team')
         transfer_fee = request.POST.get('transfer_fee')
-        transaction_code = request.POST.get('transaction_code')
-        proof_of_payment = request.FILES.get('proof_of_payment')
-
         player = Player.objects.get(id=player_id)
         from_team = Team.objects.get(id=from_team_id)
         to_team = Team.objects.get(id=to_team_id)
@@ -261,11 +537,11 @@ def request_transfer(request):
             player=player,
             from_team=from_team,
             to_team=to_team,
-            transaction_code=transaction_code,
-            proof_of_payment=proof_of_payment,
+            transfer_fee=transfer_fee,
             status='Pending'
         )
 
+        
         AdminNotification.objects.create(
             title="Transfer Request",
             message=f"{from_team.name} requested transfer of {player.player_name} to {to_team.name}"
@@ -275,9 +551,10 @@ def request_transfer(request):
          user=from_team.coach,
          message=f"Transfer request received for {player.player_name} from {from_team.name} to {to_team.name}"
         )
-        Notification.objects.create(
-            user=request.user,
-            message="Your transfer request has been submitted successfully."
+        
+        messages.success(
+            request,
+            "Transfer request submitted successfully. Waiting for the other coach to approve."
         )
 
         return redirect('/dashboard/')
@@ -308,54 +585,65 @@ def team_payment(request):
 
         team_id = request.POST.get('team')
         amount_paid = request.POST.get('amount_paid')
-        mpesa_code = request.POST.get('mpesa_code')
-        payment_proof = request.FILES.get('payment_proof')
-
-        # Check duplicate Mpesa code
-        if TeamPayment.objects.filter(mpesa_code=mpesa_code).exists():
-
-            messages.error(
-                request,
-                "This Mpesa code has already been used."
-            )
-
-            return redirect('team_payment')
+        phone_number = request.POST.get('phone_number')
+        if phone_number.startswith("0"):
+            phone_number = "254" + phone_number[1:]
 
         team = Team.objects.get(id=team_id)
 
-        TeamPayment.objects.create(
+        try:
+            stk_response = initiate_stk_push(
+                phone_number,
+                amount_paid,
+                description="Team Registration Fee"
+            )
+
+            checkout_request_id = stk_response.get("CheckoutRequestID")
+
+            print("TEAM REGISTRATION STK RESPONSE:", stk_response)
+
+        except requests.RequestException as e:
+            messages.error(
+                request,
+                f"M-Pesa STK Push failed: {str(e)}"
+            )
+            return redirect('team_payment')
+
+
+        payment = TeamPayment.objects.create(
             team=team,
             amount_paid=amount_paid,
-            mpesa_code=mpesa_code,
-            payment_proof=payment_proof
+            mpesa_code=checkout_request_id,
+            payment_status='Pending'
         )
 
-        AdminNotification.objects.create(
-            title="Team Registration Payment",
-            message=f"{team.name} submitted a registration payment of KES{amount_paid}. {mpesa_code}"
-        )
         FinanceRecord.objects.create(
             category='Team Registration',
             team=team,
             amount=amount_paid,
             description='Team registration payment',
             transaction_date=date.today(),
-            transaction_code=mpesa_code,
-            payment_proof=payment_proof,
+            transaction_code=checkout_request_id,
+            payment_method='M-Pesa',
+            phone_number=phone_number,
+            payment_reference=checkout_request_id,
+            payment_message='Waiting for M-Pesa confirmation',
             status='Pending',
+            approved=False,
             coach=request.user
         )
-        Notification.objects.create(
-             user=request.user,
-             message="Your payment was submitted successfully and is awaiting admin approval."
-)
-    
-        messages.success(
+
+        print("FINANCE RECORD CREATED FOR TEAM:", team.name)
+
+        messages.info(
             request,
-            "Payment submitted successfully. Await admin approval."
+            "STK Push sent to your phone. Enter your M-Pesa PIN to complete the payment."
         )
 
-        return redirect('team_payment')
+        return redirect(
+            'check_team_payment_status',
+            payment_id=payment.id
+        )
 
     context = {
         'teams': teams
@@ -365,6 +653,70 @@ def team_payment(request):
         request,
         'teams/payment.html',
         context
+    )
+
+def check_team_payment_status(request, payment_id):
+
+    payment = TeamPayment.objects.get(id=payment_id)
+
+    checkout_request_id = payment.mpesa_code
+
+    try:
+        result = query_stk_status(checkout_request_id)
+
+        print("TEAM PAYMENT QUERY RESULT:", result)
+
+        result_code = str(result.get("ResultCode", ""))
+
+        if result_code == "0":
+
+            payment.payment_status = "Approved"
+            payment.save()
+
+            FinanceRecord.objects.filter(
+                team=payment.team,
+                category='Team Registration',
+                status='Pending'
+            ).update(
+                status='Approved',
+                approved=True,
+                payment_message='M-Pesa payment confirmed successfully'
+            )
+
+            messages.success(
+                request,
+                "M-Pesa payment confirmed successfully."
+            )
+
+        else:
+            payment.payment_status = "Pending"
+            payment.save()
+
+            FinanceRecord.objects.filter(
+                team=payment.team,
+                category="Team Registration",
+                payment_reference=checkout_request_id
+            ).update(
+                status="Pending",
+                approved=False,
+                payment_message="M-Pesa payment not yet confirmed"
+            )
+
+            messages.warning(
+                request,
+                "Payment has not been confirmed yet."
+            )
+
+    except requests.RequestException as e:
+        print("STK QUERY ERROR:", e)
+
+        messages.error(
+            request,
+            "Unable to check M-Pesa payment status right now."
+        )
+
+    return redirect(
+        f"{reverse('team_payment')}?payment_id={payment.id}"
     )
 
 # REFEREE LOGIN
@@ -754,15 +1106,30 @@ def approve_transfer(request, transfer_id):
 
     transfer = Transfer.objects.get(id=transfer_id)
 
+    print("APPROVING TRANSFER ID:", transfer.id)
+    print("STATUS BEFORE APPROVAL:", transfer.status)
+    print("TRANSFER FEE:", transfer.transfer_fee)
+
     transfer.status = 'Approved'
     transfer.save()
+
+    print("STATUS AFTER APPROVAL:", transfer.status)
+
     Notification.objects.create(
         user=transfer.to_team.coach,
-        message=f"Transfer approved for {transfer.player.player_name}"
+        message=(
+            f"Transfer approved for "
+            f"{transfer.player.player_name}. "
+            f"Transfer fee: KSh {transfer.transfer_fee}"
+        )
+    )
+
+    messages.success(
+        request,
+        "Transfer approved successfully. Payment can now be made."
     )
 
     return redirect('transfer_requests')
-
 
 def reject_transfer(request, transfer_id):
 
@@ -776,25 +1143,69 @@ def reject_transfer(request, transfer_id):
     )
 
     return redirect('transfer_requests')
+
 def transfer_payment(request, transfer_id):
+    print("🔥🔥🔥 NEW TRANSFER PAYMENT FUNCTION IS RUNNING 🔥🔥🔥")
+
+    print("STEP 1: transfer_payment reached")
 
     transfer = Transfer.objects.get(id=transfer_id)
 
+    print("STEP 2: Transfer found:", transfer)
+
     if request.method == 'POST':
 
-        amount = request.POST.get('amount')
-        transaction_code = request.POST.get('transaction_code')
-        proof_of_payment = request.FILES.get('proof_of_payment')
+        print("STEP 3: POST received")
 
-        payment = TransferPayment.objects.create(
+        phone_number = request.POST.get('phone_number')
+        print("STEP 4: RAW PHONE:", phone_number)
+
+        phone_number = format_mpesa_phone(phone_number)
+        print("STEP 5: FORMATTED PHONE:", phone_number)
+
+        amount = transfer.transfer_fee
+        print("STEP 6: TRANSFER FEE:", amount)
+
+        if amount is None:
+            messages.error(
+                request,
+                "Transfer fee is not set for this transfer."
+            )
+            return redirect('coach_dashboard')
+
+        try:
+            print("PHONE BEING SENT:", phone_number)
+
+            print("AMOUNT BEING SENT:", amount)
+            
+            print("STEP 7: About to initiate STK Push")
+
+            stk_response = initiate_stk_push(phone_number, amount, description="Player Transfer Fee")
+
+            checkout_request_id = stk_response.get("CheckoutRequestID")
+
+            print("STEP 8: STK RESPONSE:", stk_response)
+
+        except requests.RequestException as e:
+            print("STEP ERROR:", str(e))
+
+            messages.error(
+                request,
+                f"M-Pesa STK Push failed: {str(e)}"
+            )
+            return redirect('coach_dashboard')
+
+        payment, created = TransferPayment.objects.update_or_create(
             transfer=transfer,
-            amount=amount,
-            transaction_code=transaction_code,
-            proof_of_payment=proof_of_payment
+            defaults={
+                'amount': amount,
+                'status': 'Pending',
+                'checkout_request_id': checkout_request_id,
+            }
         )
-        transfer.transaction_code =transaction_code
-        transfer.proof_of_payment =proof_of_payment
+
         transfer.save()
+
         FinanceRecord.objects.create(
             category='Player Transfer',
             transfer=transfer,
@@ -803,10 +1214,12 @@ def transfer_payment(request, transfer_id):
             amount=amount,
             description=f"Transfer fee for {transfer.player.player_name}",
             transaction_date=date.today(),
-            transaction_code=transaction_code,
-            payment_proof=proof_of_payment,
+            payment_reference=checkout_request_id,
+            payment_message='Waiting for M-Pesa confirmation',
+            payment_method='M-Pesa',
             status='Pending'
-    )
+        )
+
         return redirect('coach_dashboard')
 
     return render(

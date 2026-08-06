@@ -194,23 +194,14 @@
             {% csrf_token %}
 
             <input
-                type="number"
-                name="amount"
-                placeholder="Transfer Fee"
+                type="tel"
+                name="phone_number"
+                placeholder="Phone Number e.g. 0712345678"
                 required
             >
-
-            <input
-                type="text"
-                name="transaction_code"
-                placeholder="Transaction Code"
-                required
-            >
-
-            <input type="file" name="proof_of_payment" required>
 
             <button type="submit">
-                Submit Payment
+                Pay Transfer Fee
             </button>
 
         </form>

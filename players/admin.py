@@ -37,13 +37,11 @@ class TransferAdmin(admin.ModelAdmin):
         'player',
         'from_team',
         'to_team',
-        'transaction_code',
         'status',
+        'transfer_fee',
     )
 
-    readonly_fields = (
-        'proof_of_payment',
-    )
+   
 
     def save_model(self, request, obj, form, change):
 

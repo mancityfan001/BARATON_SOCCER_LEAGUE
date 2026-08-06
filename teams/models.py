@@ -71,10 +71,19 @@ class TeamPayment(models.Model):
         unique=True
     )
 
-    payment_proof =models.ImageField(
-        upload_to='payment_proofs/',
-        blank=True,
-        null=True
+    phone_number = models.CharField(
+    max_length=15,
+    blank=True
+    )
+
+    payment_method = models.CharField(
+        max_length=30,
+        default='Simulated M-Pesa'
+    )
+
+    payment_message = models.CharField(
+        max_length=255,
+        blank=True
     )
 
     payment_status = models.CharField(

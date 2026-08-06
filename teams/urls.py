@@ -49,4 +49,11 @@ urlpatterns = [
         views.transfer_payment,
         name='transfer_payment'
     ),
+
+    path(
+        'team-payment/check/<int:payment_id>/',
+        views.check_team_payment_status,
+        name='check_team_payment_status'
+    ),
+
 ]
